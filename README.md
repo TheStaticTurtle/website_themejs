@@ -18,7 +18,7 @@ License: [CC BY-NC-SA 4.0](LICENSE.md).
 
 Also provided: full-content RSS feed, `robots.txt`, a per-language sitemap with a root index (the `contributors` section is left out and marked `noindex`), canonical/hreflang links and OpenGraph/Twitter card tags (`partials/seo.html`), Umami analytics, a listmonk newsletter form (sent in the background with JavaScript, plain form without), giscus comments, Mermaid diagrams (with a no-JS fallback) and an image lightbox, and a table of contents of the post (two levels, current section highlighted) in the left gutter on screens wider than 1730px; `toc: false` in a post's front matter hides it.
 
-Not included: language selector, dark mode switch, portfolio layouts.
+Not included: dark mode switch. The `portfolio` layout (front matter `layout: portfolio`) renders a plain page with a flag language selector.
 
 ## Building the styles
 

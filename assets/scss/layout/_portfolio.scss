@@ -1,0 +1,23 @@
+@use "../abstracts/variables" as *;
+
+// Portfolio pages (layouts/portfolio.html)
+#section-portfolio {
+  margin-bottom: 80px;
+}
+
+// Helpers used by the portfolio content (the social icon row)
+.d-flex {
+  display: flex;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.social-icon {
+  margin-bottom: $space-8;
+}

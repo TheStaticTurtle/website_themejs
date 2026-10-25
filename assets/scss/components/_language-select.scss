@@ -1,0 +1,24 @@
+@use "../abstracts/variables" as *;
+
+// "Read in:" flags above a page, see layouts/portfolio.html
+.language-select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    margin-right: $space-8;
+  }
+
+  a img {
+    height: 32px;
+  }
+}
+
+#section-language {
+  margin-top: $space-16;
+
+  + #section-portfolio {
+    margin-top: $space-24;
+  }
+}

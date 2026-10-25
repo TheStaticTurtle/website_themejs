@@ -16,6 +16,7 @@
 @use "layout/container";
 @use "layout/header";
 @use "layout/footer";
+@use "layout/portfolio";
 
 // ---- Components -----------------------------------------------------------------------
 @use "components/button";
@@ -26,6 +27,7 @@
 @use "components/author";
 @use "components/lightbox";
 @use "components/newsletter";
+@use "components/language-select";
 
 // ---- Article --------------------------------------------------------------------------
 @use "article/prose";

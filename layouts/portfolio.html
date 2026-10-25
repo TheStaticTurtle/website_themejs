@@ -1,0 +1,27 @@
+{{ define "main" }}
+    {{ if .IsTranslated }}
+    <section id="section-language" class="container">
+        <div class="language-select">
+            <span>Read in:</span>
+            {{ range .Translations }}
+                {{ $lang := . }}
+                {{ with resources.Get (printf "img/flags/%s.png" $lang.Language.Lang) }}
+                <a href="{{ $lang.RelPermalink }}" hreflang="{{ $lang.Language.Lang }}">
+                    <img alt="{{ $lang.Language.Label }}" src="{{ .RelPermalink }}">
+                </a>
+                {{ end }}
+            {{ end }}
+        </div>
+    </section>
+    {{ end }}
+    <section id="section-portfolio" class="container markdown">
+        {{ if .IsHome }}
+            {{ if eq .Language.Lang "fr" }}
+            <h2 id="À-mon-propos">À mon propos</h2>
+            {{ else }}
+            <h2 id="about-me">About me</h2>
+            {{ end }}
+        {{ end }}
+        {{ .Content | emojify | safeHTML }}
+    </section>
+{{ end }}
