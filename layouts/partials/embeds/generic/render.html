@@ -9,8 +9,12 @@
 {{- $title := index $tags "og:title" | default (index $tags "twitter:title") | default $url -}}
 {{- $description := index $tags "og:description" | default (index $tags "twitter:description") | default "" -}}
 {{- $image := "" -}}
+{{- /* thumbnails hosted on params.opengraph.skipImages are left out: nothing is downloaded, so slow image hosts cost no build time */ -}}
+{{- $skipImages := (site.Params.opengraph | default dict).skipImages | default slice -}}
 {{- with index $tags "og:image" -}}
-    {{- $image = partial "image.html" (dict "page" $.page "src" .) -}}
+    {{- if not (in $skipImages (urls.Parse .).Host) -}}
+        {{- $image = partial "image.html" (dict "page" $.page "src" .) -}}
+    {{- end -}}
 {{- end -}}
 <a target="_blank" rel="noopener" class="embed embed-{{ $brand }}" href="{{ $url }}">
     {{ partial "embeds/arrow.html" }}

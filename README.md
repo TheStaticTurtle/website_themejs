@@ -34,7 +34,7 @@ params:
   pagination: { articleCount: 9 }
   comments: { enabled: true, repo: owner/repo, repoId: ..., category: General, categoryId: ... }  # giscus
   ssr: { user_agent: ... }   # User-Agent used when fetching pages for {{< og >}}
-  opengraph: { enabled: false }   # {{< og >}} fetches the linked pages at build time when true
+  opengraph: { enabled: false, skipImages: [host, ...] }   # {{< og >}} fetches the linked pages at build time when true; thumbnails hosted on skipImages are not downloaded
   umami: { url: ..., id: ... }    # analytics; add skipOnServer: true to leave `hugo server` out
   newsletter: { enabled: true, popup: true, url: https://listmonk.example.org, list: <list uuid> }  # listmonk form at the end of posts + slide-in panel
   fediverse: "@user@instance"   # fediverse:creator meta tag
