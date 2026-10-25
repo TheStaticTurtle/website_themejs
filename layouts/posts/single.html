@@ -2,6 +2,7 @@
     <article>
         {{/* Prose: everything inside .markdown gets the article styles */}}
         <section id="section-content" class="container markdown">
+            {{ partial "content/toc.html" . }}
             <h1>{{ .Title }}</h1>
             <span class="h1-subtitle">{{ .Summary | emojify | safeHTML }}</span>
             {{ with .Resources.GetMatch (.Params.image | default "-") }}

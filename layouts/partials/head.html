@@ -50,3 +50,14 @@
         {{ end }}
     {{ end }}
 {{ end }}{{ end }}
+
+{{/* Optional enhancement: highlights the current section in the table of contents */}}
+{{ if and (eq .Section "posts") .IsPage }}
+    {{ with resources.Get "js/toc.js" }}
+        {{ if hugo.IsProduction }}{{ $js := . | minify | fingerprint }}
+        <script src="{{ $js.RelPermalink }}" defer></script>
+        {{ else }}
+        <script src="{{ .RelPermalink }}" defer></script>
+        {{ end }}
+    {{ end }}
+{{ end }}

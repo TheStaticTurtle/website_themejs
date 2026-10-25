@@ -1,0 +1,27 @@
+{{- /* Table of contents of a post, shown in the left gutter of the article on very wide screens (see components/_toc.scss).
+       Context: the page. Two levels at most; nothing when the post has fewer than two headings or sets `toc: false`. */ -}}
+{{- /* Hugo reports the page title as an empty first entry holding all the headings: promote its children */ -}}
+{{- $headings := slice -}}
+{{- range .Fragments.Headings }}{{ if .ID }}{{ $headings = $headings | append . }}{{ else }}{{ range .Headings }}{{ $headings = $headings | append . }}{{ end }}{{ end }}{{ end -}}
+{{- $count := 0 -}}
+{{- range $headings }}{{ $count = add $count 1 }}{{ range .Headings }}{{ $count = add $count 1 }}{{ end }}{{ end -}}
+{{- if and (ge $count 2) (ne .Params.toc false) -}}
+<aside class="toc-gutter">
+    <nav class="toc" aria-label="Table of contents">
+        <ul>
+            {{- range $headings }}
+            <li>
+                <a href="#{{ .ID | safeURL }}">{{ .Title | safeHTML }}</a>
+                {{- with .Headings }}
+                <ul>
+                    {{- range . }}
+                    <li><a href="#{{ .ID | safeURL }}">{{ .Title | safeHTML }}</a></li>
+                    {{- end }}
+                </ul>
+                {{- end }}
+            </li>
+            {{- end }}
+        </ul>
+    </nav>
+</aside>
+{{- end -}}

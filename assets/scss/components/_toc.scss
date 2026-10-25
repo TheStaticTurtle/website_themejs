@@ -2,16 +2,44 @@
 @use "../abstracts/mixins" as *;
 
 // Table of contents: a thin rail with a square marker on the current entry.
-// Only meant for very wide screens.
-.toc {
-  position: relative;
-  width: 260px;
-  padding-left: 18px;
-  text-align: left;
+// Only meant for very wide screens, where it sits in the gutter on the left of the article
+// (an absolutely positioned column as tall as the article, with the list sticky inside it).
+$toc-width: 260px;
+$toc-line-height: 20px;
+$toc-link-padding: 3px;
+
+#section-content {
+  position: relative; // the gutter is positioned against the article
+}
+
+.toc-gutter {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  bottom: 0;
+  width: $toc-width;
+  // Sits towards the edge of the window rather than against the article: the further the window is
+  // from the 1150px column, the more room, but never more than 64px between the column and the list
+  // (and never overlapping it).
+  margin-right: clamp(#{$space-8}, calc((100vw - #{$container-wide}) / 2 - #{$toc-width} - #{$space-24} * 2), 64px);
 
   @include until($bp-toc - 1px) {
     display: none;
   }
+}
+
+// a heading reached from the table of contents stops a little below the top of the window
+.markdown :is(h1, h2, h3, h4, h5, h6)[id] {
+  scroll-margin-top: $space-24;
+}
+
+.toc {
+  position: sticky;
+  top: $space-24;
+  max-height: calc(100vh - #{$space-24} * 2);
+  padding-left: 18px;
+  overflow-y: auto;
+  text-align: left;
 
   // the rail
   &::before {
@@ -30,41 +58,48 @@
     list-style: none;
   }
 
+  // Every entry is a link of the same height (one line of 20px plus 3px above and below), so the
+  // spacing is even whatever the level; the marker is centred on the first line of the current one.
   li {
-    position: relative;
     margin: 0;
-    padding: $space-4 0;
-    font-size: 15px;
     list-style: none;
 
     ul {
       padding-left: 14px;
     }
 
-    li {
-      font-size: 14px;
-    }
+    &.on > a {
+      color: var(--text-color-important);
+      font-weight: 700;
 
-    &.on {
       &::before {
         @include square-marker;
         left: -18px;
-        top: 11px;
+        top: calc(#{$toc-link-padding} + (#{$toc-line-height} - 7px) / 2);
       }
+    }
 
-      > a {
-        color: var(--text-color-important);
-        font-weight: 700;
-      }
+    // nested links start 14px further in, the marker stays on the rail
+    li.on > a::before {
+      left: -32px;
     }
   }
 
   a {
+    position: relative;
+    display: block;
+    padding: $toc-link-padding 0;
     color: var(--text-color);
+    font-size: 15px;
+    line-height: $toc-line-height;
     text-decoration: none;
 
     &:hover {
       color: var(--link-color);
     }
+  }
+
+  li li > a {
+    font-size: 14px;
   }
 }

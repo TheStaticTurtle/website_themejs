@@ -16,9 +16,9 @@ License: [CC BY-NC-SA 4.0](LICENSE.md).
 | `assets/scss/article/` | Everything inside a `.markdown` element: prose, code, tables, task lists, callouts, figures, embeds. |
 | `layouts/` | Home, lists, taxonomy index, post and page layouts; partials mirror the design system's components (`SiteHeader`, `PostCard`, `PageSelector`, `SiteFooter`, `EmbedCard`, `Figure`). |
 
-Also provided: full-content RSS feed, `robots.txt`, a per-language sitemap with a root index (the `contributors` section is left out and marked `noindex`), canonical/hreflang links and OpenGraph/Twitter card tags (`partials/seo.html`), Umami analytics, a listmonk newsletter form (sent in the background with JavaScript, plain form without), giscus comments, Mermaid diagrams (with a no-JS fallback) and an image lightbox.
+Also provided: full-content RSS feed, `robots.txt`, a per-language sitemap with a root index (the `contributors` section is left out and marked `noindex`), canonical/hreflang links and OpenGraph/Twitter card tags (`partials/seo.html`), Umami analytics, a listmonk newsletter form (sent in the background with JavaScript, plain form without), giscus comments, Mermaid diagrams (with a no-JS fallback) and an image lightbox, and a table of contents of the post (two levels, current section highlighted) in the left gutter on screens wider than 1730px; `toc: false` in a post's front matter hides it.
 
-Not included: table of contents (a `partials/content/toc` exists but no layout uses it), language selector, dark mode switch, portfolio layouts.
+Not included: language selector, dark mode switch, portfolio layouts.
 
 ## Building the styles
 
