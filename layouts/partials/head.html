@@ -39,3 +39,14 @@
     <script src="{{ .RelPermalink }}" defer></script>
     {{ end }}
 {{ end }}
+
+{{/* Optional enhancement: the newsletter form is sent in the background, and the pop-up needs it */}}
+{{ with site.Params.newsletter }}{{ if and .enabled .url .list }}
+    {{ with resources.Get "js/newsletter.js" }}
+        {{ if hugo.IsProduction }}{{ $js := . | minify | fingerprint }}
+        <script src="{{ $js.RelPermalink }}" defer></script>
+        {{ else }}
+        <script src="{{ .RelPermalink }}" defer></script>
+        {{ end }}
+    {{ end }}
+{{ end }}{{ end }}

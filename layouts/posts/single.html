@@ -15,6 +15,9 @@
 
         {{ with .Params.thanks }}{{ partial "content/thanks.html" $ }}{{ end }}
 
+        {{ partial "content/newsletter.html" . }}
+
         {{ partial "content/comments.html" . }}
+        {{ partial "content/newsletter-popup.html" . }}
     </article>
 {{ end }}

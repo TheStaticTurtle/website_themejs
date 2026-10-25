@@ -1,0 +1,8 @@
+{{- /* Newsletter section at the end of a post. Needs params.newsletter (url + list), see README. */ -}}
+{{- with site.Params.newsletter }}{{ if and .enabled .url .list }}
+<section id="section-newsletter" class="container markdown newsletter">
+    <h2 id="newsletter">Newsletter<a class="header-link" href="#newsletter"><i class="mdi mdi-link-variant" aria-hidden="true"></i><span class="sr-only">Shortcut to: Newsletter</span></a></h2>
+    <p>Want to stay updated with the latest posts and news? Subscribe to the newsletter and get an e-mail when a new article is out.</p>
+    {{ partial "content/newsletter-form.html" (dict "id" "news") }}
+</section>
+{{- end }}{{ end }}

@@ -1,6 +1,6 @@
 {{ define "main" }}
     <section id="section-single-default" class="container markdown">
-        <h1>{{ .Title }}</h1>
+        {{ with .Title }}<h1>{{ . }}</h1>{{ end }}
         {{ .Content | emojify | safeHTML }}
     </section>
 {{ end }}

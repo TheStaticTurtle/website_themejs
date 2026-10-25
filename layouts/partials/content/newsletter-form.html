@@ -1,0 +1,22 @@
+{{- /* The subscription form (listmonk). Context: (dict "id" <id prefix>).
+       Without JavaScript it posts to listmonk's own form page in a new tab; assets/js/newsletter.js sends it in the background instead. */ -}}
+{{- $n := site.Params.newsletter -}}
+{{- $id := .id -}}
+<form class="newsletter-form" method="post" action="{{ $n.url }}/subscription/form" target="_blank"
+      data-endpoint="{{ $n.url }}/api/public/subscription" data-list="{{ $n.list }}">
+    <input type="hidden" name="nonce">
+    <input type="hidden" name="l" value="{{ $n.list }}">
+
+    <div class="newsletter-fields">
+        <div class="newsletter-field">
+            <label for="{{ $id }}-email">E-mail</label>
+            <input id="{{ $id }}-email" type="email" name="email" required autocomplete="email" placeholder="you@example.com">
+        </div>
+        <div class="newsletter-field">
+            <label for="{{ $id }}-name">Name <span>(optional)</span></label>
+            <input id="{{ $id }}-name" type="text" name="name" autocomplete="name" placeholder="Name">
+        </div>
+        <button class="newsletter-submit" type="submit">Subscribe</button>
+    </div>
+    <p class="newsletter-status" role="status" aria-live="polite"></p>
+</form>

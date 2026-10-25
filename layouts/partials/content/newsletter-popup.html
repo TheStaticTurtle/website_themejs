@@ -1,0 +1,9 @@
+{{- /* Small panel that slides in a quarter of the way down a page (see assets/js/newsletter.js). Enabled by params.newsletter.popup. */ -}}
+{{- with site.Params.newsletter }}{{ if and .enabled .popup .url .list }}
+<aside id="newsletter-popup" class="newsletter-popup" aria-labelledby="newsletter-popup-title" hidden>
+    <button class="newsletter-close" type="button" aria-label="Close">&times;</button>
+    <h3 id="newsletter-popup-title">Enjoying the article?</h3>
+    <p>Subscribe to the newsletter to get notified when a new article is posted.</p>
+    {{ partial "content/newsletter-form.html" (dict "id" "popup") }}
+</aside>
+{{- end }}{{ end }}

@@ -1,0 +1,183 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Newsletter: the form (shared), the section at the end of a post and the slide-in panel.
+//
+//   <form class="newsletter-form">
+//     <div class="newsletter-fields"> <div class="newsletter-field"> label + input ... <button class="newsletter-submit">
+//     <p class="newsletter-status" data-state="info|success|error">
+
+.newsletter-form {
+  margin: $space-8 0 0 $space-8; // lines up with the indented paragraphs
+
+  .newsletter-fields {
+    display: grid;
+    gap: $space-12;
+    align-items: end;
+
+    @include from($bp-md) {
+      grid-template-columns: 1fr 1fr auto;
+    }
+  }
+
+  .newsletter-field {
+    min-width: 0;
+
+    label {
+      @include display-label(18px, 0.05em);
+
+      display: block;
+      margin-bottom: $space-4;
+      color: var(--text-color-important);
+
+      span {
+        color: var(--text-color-muted);
+        font-size: 14px;
+      }
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: $space-8 $space-12;
+      border: 1px solid var(--text-color-muted);
+      border-radius: 0;
+      background: var(--main-bg-color);
+      color: var(--text-color-important);
+      font: inherit;
+
+      &::placeholder {
+        color: var(--text-color-muted);
+      }
+
+      &:focus-visible {
+        border-color: var(--main-accent-color);
+        outline: 2px solid var(--main-accent-color);
+        outline-offset: 0;
+      }
+    }
+  }
+
+  .newsletter-submit {
+    @include outline-button;
+
+    padding: $space-8 $space-24;
+    background: none;
+    cursor: pointer;
+    font-family: $font-display;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
+  &.is-sending .newsletter-submit {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .newsletter-status {
+    margin: $space-12 0 0;
+    padding-left: $space-12;
+    border-left: $accent-rule solid transparent;
+    font-size: 0.95rem;
+
+    &:empty {
+      display: none;
+    }
+
+    &[data-state="info"] {
+      border-color: var(--text-color-muted);
+    }
+
+    &[data-state="success"] {
+      border-color: var(--main-accent-color);
+    }
+
+    &[data-state="error"] {
+      border-color: var(--post-content-todo-border);
+      color: var(--post-content-todo-border);
+    }
+  }
+}
+
+#section-newsletter {
+  margin-bottom: $space-32;
+}
+
+// ---- Panel ------------------------------------------------------------------------------------
+.newsletter-popup {
+  position: fixed;
+  right: $space-20;
+  bottom: $space-20;
+  z-index: 900;
+  width: min(360px, calc(100vw - #{$space-20} * 2));
+  padding: $space-12 $space-16 $space-16;
+  border: 1px solid var(--main-light-color);
+  border-top: $accent-rule solid var(--main-accent-color);
+  background: var(--main-bg-color);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 14%);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+
+  &.shown {
+    opacity: 1;
+    transform: none;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  h3 {
+    margin: 0 $space-24 $space-4 0;
+    font-size: 1.6em;
+  }
+
+  p {
+    margin: 0 0 $space-8;
+    font-size: 0.95rem;
+  }
+
+  .newsletter-form {
+    margin: 0;
+
+    .newsletter-fields {
+      grid-template-columns: 1fr;
+    }
+
+    // the panel is short: only the e-mail is asked for
+    .newsletter-field:nth-child(2) {
+      display: none;
+    }
+
+    .newsletter-submit {
+      justify-self: start;
+    }
+  }
+
+  .newsletter-close {
+    position: absolute;
+    top: $space-4;
+    right: $space-8;
+    padding: 0 $space-4;
+    border: 0;
+    background: none;
+    color: var(--text-color-muted);
+    font-size: 26px;
+    line-height: 1.2;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--text-color-important);
+    }
+
+    &:focus-visible {
+      @include focus-ring(0);
+    }
+  }
+}

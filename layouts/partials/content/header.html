@@ -1,12 +1,14 @@
 {{/* SiteHeader: logo + site name, then the outlined nav links, then a rule */}}
 <header id="section-header">
     <div id="header-title" class="align-center">
-        <h1>
+        {{- /* the site name is the h1 of the home page and of list pages (their heading is an h2); single pages and the 404 page have their own h1 */ -}}
+        {{ $tag := cond (or .IsHome (not (or .IsPage (eq .Kind "404")))) "h1" "div" }}
+        {{ printf `<%s class="site-title">` $tag | safeHTML }}
             {{- with resources.Get "img/logo_white.jpg" }}
             <img class="header-title-image" height="65" width="65" src="{{ (.Resize "130x jpg").RelPermalink }}" alt="Logo">
             {{- end }}
             <b>{{ site.Title }}</b>
-        </h1>
+        {{ printf "</%s>" $tag | safeHTML }}
     </div>
     <div id="header-navigation" class="container align-center" style="display: flex">
         <div class="row">
