@@ -1,4 +1,4 @@
-{{- /* Small panel that slides in a quarter of the way down a page (see assets/js/newsletter.js). Enabled by params.newsletter.popup. */ -}}
+{{- /* Small panel that slides in a quarter of the way down a post (see assets/js/newsletter.js). Enabled by params.newsletter.popup. */ -}}
 {{- with site.Params.newsletter }}{{ if and .enabled .popup .url .list }}
 <aside id="newsletter-popup" class="newsletter-popup" aria-labelledby="newsletter-popup-title" hidden>
     <button class="newsletter-close" type="button" aria-label="Close">&times;</button>
