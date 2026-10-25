@@ -3,12 +3,19 @@
         <h2>All the posts</h2>
 
         {{ $size := index (site.Params.pagination | default dict) "articleCount" | default 9 }}
-        {{ $paginator := .Paginate (where site.RegularPages "Section" "posts") $size }}
+        {{ $posts := where site.RegularPages "Section" "posts" }}
+        {{/* The newest post is shown on its own row on page 1 (three columns wide), so it is left out of the pagination:
+             page 1 shows it plus a full grid of $size posts, like every other page */}}
+        {{ $paginator := .Paginate (after 1 $posts) $size }}
 
-        {{/* PostList: three columns, the newest post spans the first row on page 1 */}}
         <div class="post-list">
-            {{ range $i, $p := $paginator.Pages }}
-                {{ partial "content/post-card.html" (dict "page" $p "big" (and (eq $i 0) (eq $paginator.PageNumber 1))) }}
+            {{ if eq $paginator.PageNumber 1 }}
+                {{ range first 1 $posts }}
+                    {{ partial "content/post-card.html" (dict "page" . "big" true) }}
+                {{ end }}
+            {{ end }}
+            {{ range $paginator.Pages }}
+                {{ partial "content/post-card.html" (dict "page" .) }}
             {{ end }}
         </div>
 
