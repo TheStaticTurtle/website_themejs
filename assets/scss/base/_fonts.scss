@@ -1,0 +1,36 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/icon-glyphs" as *;
+
+// ---- Bebas Neue (headings) ----------------------------------------------------
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("/fonts/BebasNeue-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+// ---- Material Design Icons ----------------------------------------------------
+@font-face {
+  font-family: $icon-font;
+  src: url("/fonts/materialdesignicons-webfont.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+.mdi::before {
+  display: inline-block;
+  font: normal normal normal 24px/1 $icon-font;
+  font-size: inherit;
+  line-height: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@each $name, $glyph in $icon-glyphs {
+  .mdi-#{$name}::before {
+    content: $glyph;
+  }
+}

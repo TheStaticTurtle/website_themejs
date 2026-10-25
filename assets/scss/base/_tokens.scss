@@ -1,0 +1,92 @@
+// Colour tokens, as CSS custom properties.
+//
+// The site is light. The dark palette is opt-in only: put data-theme="dark" on <html>.
+// It is never picked from the OS setting.
+
+@use "sass:map";
+
+// ---- Palettes -----------------------------------------------------------------
+$light: (
+  "main-bg-color":          #f8f9fa,
+  "main-light-color":       #e3e3e3,
+  "main-accent-color":      #00b653,
+  "text-color-important":   #1c313a,
+  "text-color":             #3a3a3a,
+  "text-color-muted":       #726f6f,
+  "on-accent-color":        #ffffff,
+  "link-color-mouserover-color": #12964a,
+  "surface-color":          #f0f2f3,
+  "embed-hackaday-color":   #1a1a1a,
+
+  // Code (see article/_syntax.scss), all above 4.5:1 on surface-color
+  "syntax-comment":         #596a71,
+  "syntax-keyword":         #0a7a3d,
+  "syntax-string":          #a8420a,
+  "syntax-number":          #0b6a94,
+  "syntax-name":            #7a4f00,
+  "syntax-error":           #c0261f,
+);
+
+// Only what differs from the light palette
+$dark-overrides: (
+  "main-bg-color":          #263238,
+  "main-accent-color":      #2fd47c,
+  "text-color-important":   #cccccc,
+  "text-color":             #b9b8b8,
+  "on-accent-color":        #263238,
+  "link-color-mouserover-color": #5ddd99,
+  "surface-color":          #2a383f,
+  "embed-hackaday-color":   #b5b5b5,
+
+  "syntax-comment":         #98a3a8,
+  "syntax-keyword":         #5ddd99,
+  "syntax-string":          #f2a65a,
+  "syntax-number":          #6cc4f0,
+  "syntax-name":            #e0c070,
+  "syntax-error":           #ff7b72,
+);
+$dark: map.merge($light, $dark-overrides);
+
+@mixin palette($colors) {
+  @each $name, $value in $colors {
+    --#{$name}: #{$value};
+  }
+}
+
+:root {
+  color-scheme: light;
+  @include palette($light);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  @include palette($dark);
+}
+
+// ---- Tokens shared by both palettes ----------------------------------------------
+// (aliases and brand colours: the same in light and dark)
+:root {
+  --main-social-link-color:              var(--main-accent-color);
+  --main-social-link-mouserover-color:   var(--on-accent-color);
+  --link-color:                          var(--main-accent-color);
+  --tag-color:                           var(--text-color);
+  --tag-hover-bg-color:                  var(--main-accent-color);
+  --tag-hover-color:                     var(--on-accent-color);
+  --post-list-icon-color:                #808e95;
+  --post-content-blockquote-border-color: var(--main-accent-color);
+  --post-content-table-border-color:     var(--post-list-icon-color);
+  --post-content-dl-dt-color:            var(--main-accent-color);
+  --post-content-warning-border:         #ef6c00;
+  --post-content-todo-border:            #d32f2f;
+
+  --embed-youtube-color:       #f30a0a;
+  --embed-github-color:        #967bb6;
+  --embed-reddit-color:        #ff5700;
+  --embed-stackoverflow-color: #f48024;
+  --embed-twitter-color:       #1da1f2;
+  --embed-wikipedia-color:     #c9c9c9;
+  --embed-diagram-color:       #ee53ab;
+  --embed-thanks-color:        #f84fc5;
+
+  --shadow-kbd: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(0, 0, 0, 0.205) inset;
+}

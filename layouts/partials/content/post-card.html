@@ -1,0 +1,34 @@
+{{/* PostCard. Context: (dict "page" <post> "big" <bool>) */}}
+{{ $p := .page }}
+<div class="post-item{{ if .big }} post-item-big{{ end }}">
+    <div class="post-item-image-container">
+        <a href="{{ $p.RelPermalink }}">
+            {{ $cover := or ($p.Resources.GetMatch ($p.Params.image | default "-")) (resources.Get "img/default_post_cover.png") }}
+            <img src="{{ ($cover.Resize "1200x webp q96").RelPermalink }}" alt="{{ $p.Title }}" loading="lazy">
+        </a>
+    </div>
+    <div class="post-item-details-container">
+        <p class="post-item-title"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></p>
+        <p class="post-item-description">{{ $p.Summary | plainify }}</p>
+        <div class="post-item-infos">
+            <div><i class="mdi mdi-account" aria-hidden="true"></i></div>
+            <div>
+                {{ range $p.Params.authors }}
+                    {{ with site.GetPage (printf "/authors/%s" .) }}<a href="{{ .RelPermalink }}">{{ .Params.name }}</a>{{ end }}
+                {{ end }}
+            </div>
+            <div><i class="mdi mdi-clock" aria-hidden="true"></i></div>
+            <div>{{ $p.Date | time.Format ":date_long" }}</div>
+        </div>
+        {{ with $p.Params.tags }}
+        <div class="post-item-infos">
+            <div class="tag-icon"><i class="mdi mdi-tag" aria-hidden="true"></i></div>
+            <div class="tag-container">
+                {{ range . }}
+                    {{ with site.GetPage (printf "/tags/%s" (. | urlize)) }}<a class="tag" href="{{ .RelPermalink }}">{{ .Title | humanize }}</a>{{ end }}
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>

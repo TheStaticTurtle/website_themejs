@@ -1,0 +1,41 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<script>document.documentElement.classList.add("js")</script>
+{{/* contributor pages exist for the "special thanks" links, but are not meant to show up in search results */}}
+{{ if eq .Section "contributors" }}
+<meta name="robots" content="noindex">
+{{ end }}
+{{/* main-bg-color of the light palette */}}
+<meta name="theme-color" content="#f8f9fa">
+
+{{ with resources.Get "img/logo_white_rounded.png" }}
+<link rel="icon" type="image/png" href="{{ (.Resize "64x png").RelPermalink }}">
+{{ end }}
+
+{{ if .IsHome }}
+<title>{{ site.Title }}</title>
+{{ else }}
+<title>{{ .Params.name | default .Title }} - {{ site.Title }}</title>
+{{ end }}
+{{ with or .Summary site.Params.description }}
+<meta name="description" content="{{ . | plainify | truncate 200 }}">
+{{ end }}
+{{ partial "seo.html" . }}
+
+{{ with .OutputFormats.Get "rss" -}}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .RelPermalink }}" title="{{ site.Title }}">
+{{ end -}}
+
+<link rel="preload" href="/fonts/BebasNeue-Regular.woff2" as="font" type="font/woff2" crossorigin>
+{{ partial "css.html" . }}
+{{ partial "analytics.html" . }}
+
+{{/* Optional enhancement: click an article image to open it in a modal. Pages work without it. */}}
+{{ with resources.Get "js/lightbox.js" }}
+    {{ if hugo.IsProduction }}{{ $js := . | minify | fingerprint }}
+    <script src="{{ $js.RelPermalink }}" defer></script>
+    {{ else }}
+    <script src="{{ .RelPermalink }}" defer></script>
+    {{ end }}
+{{ end }}

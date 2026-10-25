@@ -1,0 +1,9 @@
+{{- /* Figure: image on a hairline accent rule, optional caption tab. Context: (dict "src" url "href" url "alt" text "caption" text) */ -}}
+<figure class="below"{{ if .caption }} tabindex="0"{{ end }}>
+    <div class="fig-im">
+        <a target="_blank" rel="noopener" href="{{ .href }}"><img src="{{ .src }}" alt="{{ .alt }}" loading="lazy"></a>
+    </div>
+    {{- with .caption }}
+    <figcaption><span class="txt">{{ . }}</span></figcaption>
+    {{- end }}
+</figure>

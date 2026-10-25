@@ -1,0 +1,172 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// ---- Grid of cards: three columns, two below 1200px, one below 768px ------------------
+.post-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 4vmin;
+
+  @include until($bp-xl) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include until($bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ---- One card ----------------------------------------------------------------------
+.post-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--surface-color);
+  text-align: inherit;
+}
+
+// The template resizes the cover with Fit (whole picture kept); object-fit: cover then
+// crops it to this box, centred.
+.post-item-image-container {
+  height: 200px;
+  background: var(--main-light-color);
+
+  a {
+    position: relative;
+    display: block;
+    overflow: hidden;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+}
+
+.post-item-details-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 $space-12 10px;
+
+  p {
+    margin: 0;
+  }
+}
+
+// The title is an ink bar that bleeds to the card edges
+.post-item-title {
+  @include display-label(20px);
+
+  margin: 0 (-$space-12) $space-8 !important;
+  padding: 5px $space-12 $space-4;
+  background: var(--text-color-important);
+  font-weight: 400;
+  line-height: 1.2;
+
+  a,
+  a:hover {
+    color: var(--main-bg-color);
+    text-decoration: none;
+  }
+}
+
+.post-item-description {
+  margin: $space-4 0 $space-6 !important;
+  color: var(--text-color);
+  font-size: 0.88em;
+}
+
+// Author / date row and tag row
+.post-item-infos {
+  display: flex;
+  flex-grow: 0;
+  align-items: center;
+  margin-top: $space-2;
+
+  div {
+    color: var(--text-color);
+    font-size: 0.9em;
+
+    i {
+      margin: 0 $space-4 0 0;
+      color: var(--post-list-icon-color);
+      font-size: 1em;
+
+      &[class*="mdi-tag"] {
+        margin-left: 1px;
+        margin-right: 1px;
+      }
+    }
+
+    &:not(:first-child) > i {
+      margin-left: $space-8;
+    }
+  }
+
+  a:not(.tag),
+  a:not(.tag):hover {
+    color: var(--text-color-important);
+    text-decoration: underline;
+    text-decoration-color: var(--main-accent-color);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  // Tags a little darker than the card, so they stand out from it
+  .tag {
+    background-color: color-mix(in srgb, var(--text-color-important) 10%, var(--surface-color));
+
+    &:hover {
+      background-color: var(--tag-hover-bg-color);
+      color: var(--tag-hover-color);
+    }
+  }
+}
+
+// ---- The first card of the first page spans the whole row (wide screens) ----------------
+@include from($bp-xl) {
+  .post-item-big {
+    display: grid;
+    grid-column: 1 / span 3;
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 0;
+
+    .post-item-image-container,
+    .post-item-image-container a {
+      height: 100%;
+    }
+
+    .post-item-image-container img {
+      height: 100%;
+      min-height: 260px;
+    }
+
+    .post-item-details-container {
+      padding: 0 0 18px;
+    }
+
+    .post-item-title {
+      margin: 0 0 14px !important;
+      padding: 10px 22px 6px;
+      font-size: 30px;
+    }
+
+    .post-item-description,
+    .post-item-infos {
+      padding: 0 22px;
+    }
+  }
+}
+
+.post-item-featured {
+  margin-left: $space-8;
+  font-family: $font-sans;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.85;
+}

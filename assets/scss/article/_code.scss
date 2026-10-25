@@ -1,0 +1,140 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Targets Hugo's goldmark + Chroma output:
+//
+//   <div class="highlight">
+//     <span class="filename">main.py</span>             (render-codeblock.html, optional)
+//     <pre class="chroma" tabindex="0">
+//       <code class="language-x"><span class="line"><span class="ln">1</span><span class="cl">...
+//
+// `!important` is needed because Chroma writes colours into style="" when
+// markup.highlight.noClasses is true. Line numbers and highlighted lines also need
+// noClasses: false, otherwise Chroma drops the .line / .ln / .cl classes.
+
+$code-padding: $space-12;
+
+.markdown .highlight {
+  margin-bottom: $space-16;
+  padding: $code-padding;
+  background: var(--surface-color) !important;
+  color: var(--text-color) !important;
+
+  pre {
+    margin: 0 (-$code-padding); // lets highlighted lines bleed to the block edge
+    padding: 0 $code-padding;
+    overflow-x: auto;
+    background: none !important;
+    color: var(--text-color) !important;
+    font-family: $font-mono;
+    font-size: 13.6px;
+    line-height: 1.5;
+    tab-size: 4;
+
+    &:focus-visible {
+      @include focus-ring(4px);
+    }
+
+    @media print {
+      white-space: pre-wrap;
+    }
+
+    code {
+      margin: 0;
+      padding: 0;
+      background: none !important;
+      color: inherit !important;
+      font: inherit;
+    }
+
+    // Token colours: with noClasses: true Chroma writes them inline (they are kept as they are,
+    // only the background is dropped); with noClasses: false see _syntax.scss.
+    span[style] {
+      background: none !important;
+    }
+  }
+
+  // ---- Filename bar ({title="main.py"}) ---------------------------------------------
+  .filename {
+    @include display-label(17px);
+    @include ink-bar;
+
+    position: relative;
+    display: block;
+    margin: (-$code-padding) (-$code-padding) $code-padding;
+    padding: $space-6 $code-padding 3px;
+    background: var(--text-color-important) !important;
+    color: var(--main-bg-color) !important;
+    line-height: 1.2;
+  }
+
+  // ---- Line numbers (linenos=true) and highlighted lines (hl_lines) ----------------------
+  .line {
+    display: flex;
+  }
+
+  .ln,
+  .lnt {
+    flex: none;
+    box-sizing: content-box;
+    min-width: 2ch;
+    padding-right: 14px;
+    color: var(--text-color-muted) !important;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .cl {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .hl {
+    margin: 0 (-$code-padding);
+    padding: 0 $code-padding;
+    background: color-mix(in srgb, var(--main-accent-color) 14%, transparent) !important;
+    box-shadow: inset $accent-rule 0 0 var(--main-accent-color);
+  }
+
+  // ---- Line numbers in a separate column (linenos=table) -----------------------------------
+  .lntable {
+    width: 100%;
+    margin: 0;
+    border-spacing: 0;
+    font-size: inherit;
+
+    pre {
+      margin: 0;
+      padding: 0;
+    }
+
+    .hl {
+      margin: 0;
+      padding: 0;
+    }
+
+    td {
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font-weight: 400;
+      vertical-align: top;
+    }
+
+    .lntd:first-child {
+      padding-right: 14px;
+
+      .lnt {
+        display: block;
+        padding-right: 0;
+      }
+    }
+
+    .lntd:last-child {
+      width: 100%;
+    }
+  }
+}

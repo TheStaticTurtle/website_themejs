@@ -1,0 +1,70 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Table of contents: a thin rail with a square marker on the current entry.
+// Only meant for very wide screens.
+.toc {
+  position: relative;
+  width: 260px;
+  padding-left: 18px;
+  text-align: left;
+
+  @include until($bp-toc - 1px) {
+    display: none;
+  }
+
+  // the rail
+  &::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background: var(--post-list-icon-color);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    margin: 0;
+    padding: $space-4 0;
+    font-size: 15px;
+    list-style: none;
+
+    ul {
+      padding-left: 14px;
+    }
+
+    li {
+      font-size: 14px;
+    }
+
+    &.on {
+      &::before {
+        @include square-marker;
+        left: -18px;
+        top: 11px;
+      }
+
+      > a {
+        color: var(--text-color-important);
+        font-weight: 700;
+      }
+    }
+  }
+
+  a {
+    color: var(--text-color);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--link-color);
+    }
+  }
+}

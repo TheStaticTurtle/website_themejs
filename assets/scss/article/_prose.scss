@@ -1,0 +1,115 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Everything inside a `.markdown` element is article content (posts, thanks, comments, ...).
+// The bigger pieces (code, tables, callouts, figures, embeds) have their own files.
+
+.markdown {
+  hr {
+    margin: $space-16 0;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    max-height: 512px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    overflow-wrap: break-word;
+    background-color: var(--surface-color);
+    color: var(--text-color);
+  }
+
+  pre {
+    padding: $space-12;
+  }
+
+  p > code {
+    margin: 0;
+    padding: 0 $space-3;
+  }
+
+  // <kbd>Ctrl</kbd>: a key cap in the same faint tone as code
+  kbd {
+    padding: $space-2 5px;
+    border: 1px solid var(--post-content-table-border-color);
+    border-bottom-width: 2px;
+    border-radius: $radius-sm;
+    background: var(--surface-color);
+    box-shadow: none;
+    color: var(--text-color-important);
+    font-family: $font-mono;
+    font-size: 0.85em;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  // Heading anchor link: the 75ms fade is the system's only transition
+  .header-link {
+    font-size: 0.9em; // of the heading, so the icon scales with it
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 75ms;
+
+    i {
+      margin: 0 $space-6;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  :is(h1, h2, h3, h4, h5, h6):hover .header-link,
+  .header-link:focus-visible {
+    opacity: 1;
+  }
+}
+
+// Summary line under a post title
+.h1-subtitle p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+// Cover image at the top of a post
+.content-featured-image {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  height: 300px;
+  margin: $space-16 auto 0; // space below the post summary
+  overflow: hidden;
+  border-radius: $radius-md;
+
+  img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    object-fit: cover;
+  }
+}
+
+#section-comments,
+#section-thanks {
+  margin-bottom: $space-32;
+}
+
+#section-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0;
+
+  h1 {
+    font-size: 3.25rem;
+  }
+}

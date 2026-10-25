@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.Locale | default "en" }}">
+    <head>
+        {{- partial "head.html" . -}}
+    </head>
+    <body>
+        {{- partial "content/header.html" . -}}
+
+        <main id="main">
+            {{- block "main" . }}{{- end }}
+        </main>
+
+        {{- partial "content/footer.html" . -}}
+
+        {{- partial "diagrams.html" . -}}
+        {{- partial "embeds/scripts.html" . -}}
+    </body>
+</html>

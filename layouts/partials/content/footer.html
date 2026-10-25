@@ -1,0 +1,9 @@
+{{/* SiteFooter: copyright / RSS, then the git line */}}
+<footer>
+    {{ site.Copyright }}
+    {{- with .OutputFormats.Get "rss" }} / <a href="{{ .RelPermalink }}">RSS</a>{{ end }}
+    {{- with .GitInfo }}
+    <br>
+    Last update: #{{ .AbbreviatedHash }}, {{ .AuthorDate | time.Format ":date_long" }} at {{ .AuthorDate | time.Format ":time_long" }}
+    {{- end }}
+</footer>

@@ -1,0 +1,65 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Index-style table: ink header over an accent rule, faint alternating bands,
+// bold first column, a square marker on the hovered row. No vertical lines.
+
+.markdown table {
+  width: 100%;
+  margin-bottom: $space-16;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th,
+  td {
+    padding: $space-6 10px;
+    border: 0;
+    color: var(--text-color);
+    text-align: left;
+  }
+
+  th {
+    @include display-label(17px);
+    @include ink-bar;
+
+    font-weight: 400;
+  }
+
+  tbody tr:nth-child(odd) td {
+    background: var(--surface-color);
+  }
+
+  // First column: the row key. Its left padding is always reserved for the hover marker.
+  th:first-child,
+  td:first-child {
+    position: relative;
+    padding-left: 22px;
+  }
+
+  td:first-child {
+    color: var(--text-color-important);
+    font-weight: 700;
+  }
+
+  tbody tr:hover td:first-child::before {
+    @include square-marker;
+    left: $space-8;
+    top: 50%;
+    margin-top: -$space-3;
+  }
+
+  // Alignment: goldmark emits align="…" or style="text-align:…"; `.n` marks numeric columns
+  .n,
+  [align="right"],
+  [style*="text-align:right"],
+  [style*="text-align: right"] {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  [align="center"],
+  [style*="text-align:center"],
+  [style*="text-align: center"] {
+    text-align: center;
+  }
+}

@@ -1,0 +1,8 @@
+{{- $src := partial "image.html" (dict "page" .Page "src" .Destination) -}}
+{{- $full := partial "image.html" (dict "page" .Page "src" .Destination "full" true) -}}
+{{- if .IsBlock -}}
+    {{- partial "figure.html" (dict "src" $src "href" $full "alt" .Text "caption" (.Title | safeHTML)) -}}
+{{- else -}}
+    {{- /* an image inside a line of text: a figure cannot sit in a <p>, so it stays an inline picture */ -}}
+    <a target="_blank" rel="noopener" href="{{ $full }}"><img class="inline-img" src="{{ $src }}" alt="{{ .Text }}"{{ with .Title }} title="{{ . }}"{{ end }} loading="lazy"></a>
+{{- end -}}

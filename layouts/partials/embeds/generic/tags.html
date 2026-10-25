@@ -1,0 +1,42 @@
+{{- /* The opengraph / twitter meta tags of a page, as a dict ("og:title" => "..."). Context: (dict "url" <url> "page" <page>).
+       Downloads the page at build time, and only when params.opengraph.enabled is true: otherwise returns an empty dict.
+
+       Progress is logged, one line per link, as warnings so they show without a special log level:
+         [opengraph] fetching <url>   (from <page>)
+         [opengraph] ok <url>: <n> tags, "<title>"
+         [opengraph] FAILED <url>: <reason>
+       Hugo caches downloads (resources/_gen), so on a rebuild the "fetching" line appears without a real request. */ -}}
+{{- $url := .url -}}
+{{- $from := .page.File.Path | default .page.RelPermalink -}}
+{{- $tags := dict -}}
+{{- if index (site.Params.opengraph | default dict) "enabled" -}}
+    {{- $ssr := site.Params.ssr | default dict -}}
+    {{- $opts := dict "headers" (dict "User-Agent" (index $ssr "user_agent" | default "Mozilla/5.0 (compatible; Hugo)")) -}}
+    {{- warnf "[opengraph] fetching %s   (from %s)" $url $from -}}
+    {{- with try (resources.GetRemote $url $opts) -}}
+        {{- with .Err -}}
+            {{- warnf "[opengraph] FAILED %s: %s" $url . -}}
+        {{- else with .Value -}}
+            {{- range findRE `<meta[^>]+>` .Content -}}
+                {{- $meta := . -}}
+                {{- with findRESubmatch `(?:property|name)=["']([^"']+)["']` $meta 1 -}}
+                    {{- $key := index . 0 1 -}}
+                    {{- if and (or (hasPrefix $key "og:") (hasPrefix $key "twitter:")) (not (isset $tags $key)) -}}
+                        {{- with findRESubmatch `content="([^"]*)"|content='([^']*)'` $meta 1 -}}
+                            {{- $m := index . 0 -}}
+                            {{- $tags = merge $tags (dict $key (index $m 1 | default (index $m 2))) -}}
+                        {{- end -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+            {{- if $tags -}}
+                {{- warnf "[opengraph] ok %s: %d tags, %q" $url (len $tags) (index $tags "og:title" | default (index $tags "twitter:title") | default "no title") -}}
+            {{- else -}}
+                {{- warnf "[opengraph] ok %s: the page has no opengraph tags" $url -}}
+            {{- end -}}
+        {{- else -}}
+            {{- warnf "[opengraph] FAILED %s: empty response" $url -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- return $tags -}}

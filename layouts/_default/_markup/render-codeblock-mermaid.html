@@ -1,0 +1,6 @@
+{{- /* ```mermaid fences: the source is kept in a <pre>, which diagrams.js replaces with the drawn SVG.
+       Without JavaScript the <pre> stays, styled as a labelled code box (article/_diagram.scss). */ -}}
+{{- .Page.Store.Set "hasDiagrams" true -}}
+<div class="diagram">
+<pre class="mermaid">{{ .Inner }}</pre>
+</div>

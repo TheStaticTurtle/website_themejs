@@ -1,0 +1,21 @@
+name: Turtle JS
+license: CC BY-NC-SA 4.0
+licenselink: https://creativecommons.org/licenses/by-nc-sa/4.0/
+description: >-
+  Flat, square-cornered blog and portfolio theme: Bebas Neue headings, one green accent,
+  light and dark palettes. Implements the TheStaticTurtle design system.
+homepage: https://thestaticturtle.fr/
+tags:
+  - blog
+  - portfolio
+  - dark
+  - light
+features:
+  - optional dark palette (data-theme="dark")
+  - giscus comments
+  - opengraph link-preview shortcode
+min_version: 0.158.0
+
+author:
+  name: TheStaticTurtle
+  homepage: https://thestaticturtle.fr/

@@ -1,0 +1,5 @@
+{{- /* Links to other sites open in a new tab; internal and relative links stay in the page */ -}}
+{{- $external := or (hasPrefix .Destination "http://") (hasPrefix .Destination "https://") (hasPrefix .Destination "//") -}}
+<a href="{{ .Destination | safeURL }}"
+   {{- with .Title }} title="{{ . }}"{{ end }}
+   {{- if $external }} target="_blank" rel="noopener"{{ end }}>{{ .Text | safeHTML }}</a>

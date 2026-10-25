@@ -1,0 +1,27 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Copyright / RSS on the first line (set as a Bebas label), the git line below it.
+footer {
+  width: 100%;
+  margin-top: auto;
+  padding: $space-12 $space-16;
+  border-top: $accent-rule solid var(--main-accent-color);
+  color: var(--text-color);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+
+  &::first-line {
+    @include display-label(18px);
+    color: var(--text-color-important);
+  }
+
+  a {
+    color: var(--text-color-important);
+
+    &:hover {
+      color: var(--main-accent-color);
+    }
+  }
+}

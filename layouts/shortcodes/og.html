@@ -1,0 +1,2 @@
+{{- /* {{< og "https://url" >}}: link-preview card, built at build time from the page's opengraph tags */ -}}
+{{ partial "embed-card.html" (dict "url" (.Get 0) "page" .Page) }}

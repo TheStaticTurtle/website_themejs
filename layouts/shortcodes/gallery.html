@@ -1,0 +1,53 @@
+{{- /* {{< gallery >}}                  rows of up to three images, an incomplete row stretches to fill the width
+       {{< gallery columns=2 >}}        or {{< gallery 2 >}}: that many images per row, an incomplete row keeps the cell size
+       One image per line: a URL or images/xxx.jpg, optionally followed by "a caption". Close with {{< /gallery >}} */ -}}
+{{ $columns := 3 }}
+{{ $fixed := false }}
+{{ if .IsNamedParams }}
+    {{ with .Get "columns" }}{{ $columns = int . }}{{ $fixed = true }}{{ end }}
+{{ else }}
+    {{ with .Get 0 }}{{ $columns = int . }}{{ $fixed = true }}{{ end }}
+{{ end }}
+{{ if lt $columns 1 }}{{ $columns = 1 }}{{ end }}
+
+{{ $images := slice }}
+{{ range split .Inner "\n" }}
+    {{ if hasPrefix . "http" }}
+        {{ $images = $images | append (replace . "\r" "") }}
+    {{ end }}
+    {{ if hasPrefix . "images" }}
+        {{ $images = $images | append (replace . "\r" "") }}
+    {{ end }}
+{{ end }}
+
+{{ $imageIndex := 0 }}
+
+<div class="img-gallery-container"{{ if $fixed }} style="--gallery-columns: {{ $columns }}"{{ end }}>
+    {{ range $images }}
+        {{ $newRow := eq (mod $imageIndex $columns) 0 }}
+        {{ $endRow := or (eq $imageIndex (sub (len $images) 1)) (eq (mod $imageIndex $columns) (sub $columns 1)) }}
+
+        {{ if $newRow }}<div class="img-gallery-row">{{ end }}
+
+            {{ $caption := "" }}
+            {{ $src := . }}
+
+            {{ if (hasSuffix . "\"") }}
+                {{ $tmp := split . " \"" }}
+                {{ if eq 2 (len $tmp) }}
+                    {{ $src = index $tmp 0 }}
+                    {{ $caption = strings.TrimSuffix "\"" (index $tmp 1) }}
+                {{ end }}
+            {{ end }}
+
+            {{ $url := partial "image.html" (dict "page" $.Page "src" $src) }}
+            {{ $full := partial "image.html" (dict "page" $.Page "src" $src "full" true) }}
+            <div class="img-gallery-image">
+                {{ partial "figure.html" (dict "src" $url "href" $full "alt" $caption "caption" $caption) }}
+            </div>
+
+        {{ if $endRow }}</div>{{ end }}
+
+        {{ $imageIndex = add $imageIndex 1 }}
+    {{ end }}
+</div>

@@ -1,0 +1,11 @@
+{{/* Taxonomy index (all tags, all authors): one tag chip per term */}}
+{{ define "main" }}
+    <section id="section-terms" class="container">
+        <h2>All {{ .Title | lower }}</h2>
+        <div class="tag-container">
+            {{ range .Pages }}
+                <a class="tag" href="{{ .RelPermalink }}">{{ .Params.name | default (.Title | humanize) }} ({{ len .Pages }})</a>
+            {{ end }}
+        </div>
+    </section>
+{{ end }}

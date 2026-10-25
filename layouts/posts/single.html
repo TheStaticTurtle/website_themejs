@@ -1,0 +1,20 @@
+{{ define "main" }}
+    <article>
+        {{/* Prose: everything inside .markdown gets the article styles */}}
+        <section id="section-content" class="container markdown">
+            <h1>{{ .Title }}</h1>
+            <span class="h1-subtitle">{{ .Summary | emojify | safeHTML }}</span>
+            {{ with .Resources.GetMatch (.Params.image | default "-") }}
+                <div class="content-featured-image">
+                    <img src="{{ (.Resize "2280x webp q96").RelPermalink }}" alt="{{ $.Title }}">
+                </div>
+            {{ end }}
+            <hr>
+            {{ substr .Content (len .Summary) | emojify | safeHTML }}
+        </section>
+
+        {{ with .Params.thanks }}{{ partial "content/thanks.html" $ }}{{ end }}
+
+        {{ partial "content/comments.html" . }}
+    </article>
+{{ end }}

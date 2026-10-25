@@ -1,0 +1,17 @@
+{{/* A single tag or author: an intro (authors only), then their posts */}}
+{{ define "main" }}
+    {{ if eq .Data.Plural "authors" }}
+        <section id="section-intro" class="container">
+            {{ partial "content/author-card.html" . }}
+        </section>
+        <section id="section-posts" class="container">
+            <h2>{{ len .Pages }} Posts</h2>
+            {{ partial "content/post-list.html" . }}
+        </section>
+    {{ else }}
+        <section id="section-posts" class="container">
+            <h2>Posts tagged "{{ .Title | humanize }}"</h2>
+            {{ partial "content/post-list.html" . }}
+        </section>
+    {{ end }}
+{{ end }}

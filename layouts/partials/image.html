@@ -1,0 +1,26 @@
+{{- /* Resolves an image reference to a URL. Context: (dict "page" <page> "src" "<path or url>" "full" <bool>).
+       Local paths are looked up in the page bundle; remote ones are downloaded at build time.
+       Without "full": the image shown in the article, downsized only above 2560px wide, as webp at quality 96.
+       With "full": the untouched original, for the link behind the image and the image viewer. */ -}}
+{{- $src := .src -}}
+{{- $full := .full | default false -}}
+{{- $img := false -}}
+{{- if hasPrefix $src "http" -}}
+    {{- $ssr := site.Params.ssr | default dict -}}
+    {{- $opts := dict "headers" (dict "User-Agent" (index $ssr "user_agent" | default "Mozilla/5.0 (compatible; Hugo)")) -}}
+    {{- warnf "[opengraph] downloading image %s" $src -}}
+    {{- with try (resources.GetRemote $src $opts) -}}
+        {{- with .Err -}}{{- warnf "[opengraph] FAILED image %s: %s" $src . -}}{{- else with .Value -}}{{- $img = . -}}{{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- $img = .page.Resources.GetMatch $src | default (resources.Get $src) | default false -}}
+{{- end -}}
+
+{{- $out := $src -}}
+{{- if $img -}}
+    {{- if and (not $full) (in (slice "jpeg" "png" "webp") $img.MediaType.SubType) (gt $img.Width 2560) -}}
+        {{- $img = $img.Resize "2560x webp q96" -}}
+    {{- end -}}
+    {{- $out = $img.RelPermalink -}}
+{{- end -}}
+{{- return $out -}}

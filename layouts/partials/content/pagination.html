@@ -1,0 +1,31 @@
+{{/* PageSelector. Context: a pager ($paginator). Shows the current page and up to three on each side. */}}
+{{ if gt .TotalPages 1 }}
+{{ $cur := .PageNumber }}
+<nav class="page-selector" aria-label="Pagination">
+    <div class="page-selector-controls">
+        {{ if .HasPrev }}
+            <a class="page-selector-control" href="{{ .First.URL }}" aria-label="First page"><i class="mdi mdi-chevron-double-left" aria-hidden="true"></i></a>
+            <a class="page-selector-control" href="{{ .Prev.URL }}" aria-label="Previous page"><i class="mdi mdi-chevron-left" aria-hidden="true"></i></a>
+        {{ else }}
+            <span class="page-selector-control page-selector-disabled"><i class="mdi mdi-chevron-double-left" aria-hidden="true"></i></span>
+            <span class="page-selector-control page-selector-disabled"><i class="mdi mdi-chevron-left" aria-hidden="true"></i></span>
+        {{ end }}
+    </div>
+    {{ range .Pagers }}
+        {{ if eq .PageNumber $cur }}
+            <span class="page-selector-current" aria-current="page">{{ .PageNumber }}</span>
+        {{ else if and (ge .PageNumber (sub $cur 3)) (le .PageNumber (add $cur 3)) }}
+            <a href="{{ .URL }}" aria-label="Page {{ .PageNumber }}">{{ .PageNumber }}</a>
+        {{ end }}
+    {{ end }}
+    <div class="page-selector-controls">
+        {{ if .HasNext }}
+            <a class="page-selector-control" href="{{ .Next.URL }}" aria-label="Next page"><i class="mdi mdi-chevron-right" aria-hidden="true"></i></a>
+            <a class="page-selector-control" href="{{ .Last.URL }}" aria-label="Last page"><i class="mdi mdi-chevron-double-right" aria-hidden="true"></i></a>
+        {{ else }}
+            <span class="page-selector-control page-selector-disabled"><i class="mdi mdi-chevron-right" aria-hidden="true"></i></span>
+            <span class="page-selector-control page-selector-disabled"><i class="mdi mdi-chevron-double-right" aria-hidden="true"></i></span>
+        {{ end }}
+    </div>
+</nav>
+{{ end }}

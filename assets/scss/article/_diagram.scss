@@ -1,0 +1,73 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Mermaid diagrams (```mermaid), drawn by assets/js/diagrams.js.
+//
+//   <div class="diagram">
+//     <pre class="mermaid">graph LR; A --> B</pre>     the source; mermaid swaps it for an <svg>
+//   </div>
+//
+// Three states:
+//   drawn               (data-processed)      the SVG, centred, on the page
+//   no JavaScript       (nothing runs)        the source as a labelled code box, readable as text
+//   JavaScript, loading (html.js)             hidden for a moment, so the source does not flash
+//   library failed      (html.diagrams-failed) the code box again
+
+.markdown .diagram {
+  margin: $space-16 0;
+}
+
+// ---- The source as a code box (the fallback) ---------------------------------------------
+.markdown pre.mermaid {
+  position: relative;
+  margin: 0;
+  padding: ($space-12 + 34px) $space-12 $space-12; // room for the label bar
+  overflow-x: auto;
+  background: var(--surface-color);
+  color: var(--text-color);
+  font-family: $font-mono;
+  font-size: 13.6px;
+  line-height: 1.5;
+  text-align: left;
+  tab-size: 4;
+
+  // The label bar, like a code block's filename: "Diagram" and a hint
+  &::before {
+    @include display-label(17px);
+    @include ink-bar;
+
+    content: "Diagram source \2014  enable JavaScript to see it drawn";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: $space-6 $space-12 3px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// With JavaScript the page waits for the drawing instead of flashing the source...
+html.js:not(.diagrams-failed) .markdown pre.mermaid:not([data-processed]) {
+  visibility: hidden;
+  min-height: 120px;
+}
+
+// ...and once drawn, the box becomes a plain centred figure.
+.markdown pre.mermaid[data-processed] {
+  padding: 0;
+  overflow-x: auto;
+  background: none;
+  text-align: center;
+
+  &::before {
+    display: none;
+  }
+
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+}

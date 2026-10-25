@@ -1,0 +1,7 @@
+{{- /* Umami analytics (https://umami.is). Configured with params.umami: { url: <script url>, id: <website id> }.
+       Set params.umami.skipOnServer: true to keep `hugo server` previews out of the statistics. */ -}}
+{{- with site.Params.umami }}
+    {{- if and .url .id (not (and .skipOnServer hugo.IsServer)) }}
+<script async defer data-website-id="{{ .id }}" src="{{ .url }}"></script>
+    {{- end }}
+{{- end }}

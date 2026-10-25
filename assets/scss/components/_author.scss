@@ -1,0 +1,78 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Author card, as on the author page: picture on the left, name / bio / contact rows on the right.
+// Stacks (picture on top) below 768px.
+
+.author-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: $space-8;
+  text-align: inherit;
+
+  @include from($bp-md) {
+    display: grid;
+    grid-template-columns: auto 2fr;
+    grid-gap: 4vmin;
+  }
+}
+
+.author-item-image-container {
+  height: 200px;
+  border-radius: $radius-md;
+  background: var(--main-light-color) no-repeat 50%;
+
+  @include from($bp-md) {
+    width: fit-content;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 200px;
+    border-radius: $radius-md;
+    object-fit: cover;
+
+    @include from($bp-md) {
+      object-fit: contain;
+    }
+  }
+}
+
+.author-item-details-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: $space-8;
+
+  p {
+    margin: 0;
+  }
+}
+
+.author-item-description {
+  margin: $space-2 0 $space-4 !important;
+  font-size: 0.88em;
+}
+
+// One contact row: icon, link (and for email, the GPG key)
+.author-item-infos {
+  display: flex;
+  margin-top: $space-2;
+
+  div {
+    color: var(--text-color);
+    font-size: 0.9em;
+
+    i {
+      margin: 0 $space-4 0 0;
+      color: var(--post-list-icon-color);
+      font-size: 1em;
+    }
+
+    &:not(:first-child) > i {
+      margin-left: $space-8;
+    }
+  }
+}

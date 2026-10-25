@@ -1,0 +1,179 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Link-preview card: an open bracket (three-sided accent rule) with an arrow inside,
+// then the domain, the title and a description. An optional thumbnail sits on the right.
+//
+//   <a class="embed embed-github">
+//     <svg class="embed-go">
+//     <span class="embed-content">
+//       <span class="embed-domain"> <span class="embed-title"> <span class="embed-desc">
+//     <span class="embed-image">
+//
+// It can also be a <div class="embed"> when its text contains links of its own
+// (an anchor cannot contain anchors): diagrams.
+
+$embed-bracket-width: 36px;
+
+.markdown .embed {
+  --embed: var(--main-accent-color); // brand colour, overridden per site below
+
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: $space-16;
+  margin: $space-16 0;
+  padding: $space-4 0 $space-4 54px;
+  color: var(--text-color);
+  text-decoration: none;
+
+  @include until($bp-md - 1px) {
+    flex-direction: column-reverse;
+  }
+
+  // the bracket
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: $embed-bracket-width;
+    border: $accent-rule solid var(--embed);
+    border-right: 0;
+  }
+
+  // the arrow inside it
+  .embed-go {
+    position: absolute;
+    left: $space-8;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    margin-top: -11px;
+    color: var(--embed);
+    transition: transform 0.2s ease;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &:hover,
+  &:focus-visible {
+    .embed-go {
+      transform: translate(2px, -2px);
+    }
+
+    .embed-title {
+      color: var(--embed);
+    }
+  }
+
+  .embed-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .embed-domain {
+    @include display-label(13px);
+
+    display: block;
+    color: var(--text-color-muted);
+  }
+
+  .embed-title {
+    display: block;
+    margin: 0 0 $space-3;
+    color: var(--text-color-important);
+    font-family: $font-display;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  .embed-desc {
+    display: block;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .embed-image {
+    flex: none;
+    width: 150px;
+    border-radius: 2px;
+    background: var(--surface-color) center / cover no-repeat;
+
+    @include until($bp-md - 1px) {
+      width: auto;
+      height: 110px;
+    }
+  }
+
+  // <div> cards: links inside take the brand colour
+  &:is(div) {
+    .embed-content a {
+      color: var(--embed);
+    }
+
+    .embed-content p {
+      margin: 0;
+      padding: 0;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+  }
+}
+
+// ---- Brand colours ----------------------------------------------------------------------
+// Matches on a substring so host-derived classes ("embed-en_wikipedia_org") are tinted too.
+@each $brand in $embed-brands {
+  .markdown .embed[class*="#{$brand}"] {
+    --embed: var(--embed-#{$brand}-color);
+  }
+}
+
+@each $alias, $brand in $embed-brand-aliases {
+  .markdown .embed[class*="#{$alias}"] {
+    --embed: var(--embed-#{$brand}-color);
+  }
+}
+
+// ---- Tweets ------------------------------------------------------------------------------------
+// Twitter's widget script replaces this <blockquote>. Until then (or without JavaScript) it holds a link card,
+// so the callout "spine" of an ordinary blockquote must not apply to it.
+.markdown blockquote.twitter-tweet {
+  min-height: 0;
+  margin: $space-16 0;
+  padding: 0;
+  background: none;
+
+  &::before,
+  &::after {
+    content: none;
+  }
+
+  .embed {
+    margin: 0;
+  }
+}
+
+.markdown .twitter-tweet-rendered {
+  margin: $space-16 auto !important;
+}
+
+// ---- YouTube player -------------------------------------------------------------------------
+.markdown .video-embed {
+  display: flex;
+  justify-content: center;
+  margin: $space-16 0;
+
+  iframe {
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+  }
+}

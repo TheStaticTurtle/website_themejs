@@ -1,0 +1,31 @@
+{{/* /contributors/ lists everyone; /contributors/<name>/ shows one person and the posts they were thanked in */}}
+{{ define "main" }}
+    {{ if .Params.name }}
+        <section id="section-intro" class="container">
+            {{ partial "content/author-card.html" . }}
+        </section>
+
+        {{ $slug := path.Base (strings.TrimSuffix "/" .File.Dir) }}
+        {{ $posts := where (where site.RegularPages "Section" "posts") "Params.thanks" "intersect" (slice $slug) }}
+        {{ if $posts }}
+            <section id="section-posts" class="container">
+                <h2>Thanked in {{ len $posts }} {{ if eq (len $posts) 1 }}post{{ else }}posts{{ end }}</h2>
+                <div class="post-list">
+                    {{ range $posts }}
+                        {{ partial "content/post-card.html" (dict "page" .) }}
+                    {{ end }}
+                </div>
+            </section>
+        {{ end }}
+    {{ else }}
+        <section id="section-terms" class="container">
+            <h2>Contributors</h2>
+            <div class="tag-container">
+                {{ range .Pages }}
+                    <a class="tag" href="{{ .RelPermalink }}">{{ .Params.name | default .Title }}</a>
+                {{ end }}
+            </div>
+        </section>
+    {{ end }}
+{{ end }}
+

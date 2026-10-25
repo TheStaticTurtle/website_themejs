@@ -1,0 +1,20 @@
+{{- /* Context: a post page whose front matter has `thanks: [contributor-slug, "Free text name"]` */ -}}
+{{ $thanks := slice }}
+{{ range .Params.thanks }}
+    {{ with site.GetPage (printf "/%s/%s" "contributors" .) }}
+        {{ $name := .Params.name | default .Title | htmlEscape }}
+        {{ $thanks = $thanks | append (printf "<a href='%s'>%s</a>" .RelPermalink $name) }}
+    {{ else }}
+        {{ $thanks = $thanks | append (. | htmlEscape) }}
+    {{ end }}
+{{ end }}
+
+<section id="section-thanks" class="container markdown">
+    <h2 id="special-thanks">Special thanks<a class="header-link" href="#special-thanks"><i class="mdi mdi-link-variant" aria-hidden="true"></i><span class="sr-only">Shortcut to: Special thanks</span></a></h2>
+    <blockquote class="thanks">
+        <p>
+            I'd like to give a big thanks to {{ delimit $thanks ", " " and " | safeHTML }} for their support, whether by directly contributing to the project, offering valuable insights, or taking the time to proofread the article.
+            Your help has been truly appreciated!
+        </p>
+    </blockquote>
+</section>

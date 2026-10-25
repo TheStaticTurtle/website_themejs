@@ -1,0 +1,15 @@
+{{/* assets/scss/main.scss -> one stylesheet. Needs Dart Sass (`sass`) on the PATH. */}}
+{{ $options := dict
+    "transpiler" "dartsass"
+    "targetPath" "css/turtlejs.css"
+    "enableSourceMap" (not hugo.IsProduction)
+}}
+{{ if hugo.IsProduction }}
+    {{ $options = merge $options (dict "outputStyle" "compressed") }}
+{{ end }}
+
+{{ $css := resources.Get "scss/main.scss" | css.Sass $options }}
+{{ if hugo.IsProduction }}
+    {{ $css = $css | fingerprint }}
+{{ end }}
+<link href="{{ $css.RelPermalink }}" rel="stylesheet">

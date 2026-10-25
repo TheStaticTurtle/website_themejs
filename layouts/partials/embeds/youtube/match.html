@@ -1,0 +1,19 @@
+{{- /* YouTube. Context: the URL. Returns (dict "id" <video id> "start" <seconds or "">) for watch, youtu.be,
+       shorts, embed and live links, "" for any other URL. */ -}}
+{{- $parsed := urls.Parse . -}}
+{{- $id := "" -}}
+{{- if in (slice "youtube.com" "www.youtube.com" "m.youtube.com" "music.youtube.com" "youtube-nocookie.com" "www.youtube-nocookie.com") $parsed.Host -}}
+    {{- $id = $parsed.Query.Get "v" -}}
+    {{- with findRESubmatch `^/(?:shorts|embed|live|v)/([A-Za-z0-9_-]{11})` $parsed.Path 1 -}}
+        {{- $id = index . 0 1 -}}
+    {{- end -}}
+{{- else if eq $parsed.Host "youtu.be" -}}
+    {{- $id = strings.TrimPrefix "/" $parsed.Path -}}
+{{- end -}}
+
+{{- $out := "" -}}
+{{- if $id -}}
+    {{- $start := replaceRE `[^0-9]` "" ($parsed.Query.Get "t") -}}
+    {{- $out = dict "id" $id "start" $start -}}
+{{- end -}}
+{{- return $out -}}

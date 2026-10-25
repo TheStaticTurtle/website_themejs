@@ -1,0 +1,49 @@
+{{/* Author card: picture on the left; name, bio and contact rows on the right. Context: an author page. */}}
+<div class="author-item">
+    {{ with .Params.image }}{{ with $.Resources.GetMatch . }}
+        <div class="author-item-image-container">
+            <img src="{{ (.Resize "800x webp q96").RelPermalink }}" alt="{{ $.Params.name }}">
+        </div>
+    {{ end }}{{ end }}
+    <div class="author-item-details-container">
+        <h2>{{ .Params.name | default .Title }}</h2>
+        {{ with .Summary | plainify }}<p class="author-item-description">{{ . }}</p>{{ end }}
+
+        {{ with .Params.social }}
+            {{ with .website }}
+                <div class="author-item-infos">
+                    <div><i class="mdi mdi-web" aria-hidden="true"></i></div>
+                    <div><a href="{{ . }}" target="_blank" rel="noopener">{{ . }}</a></div>
+                </div>
+            {{ end }}
+            {{ with .twitter }}
+                <div class="author-item-infos">
+                    <div><i class="mdi mdi-twitter" aria-hidden="true"></i></div>
+                    <div><a href="https://twitter.com/{{ . }}" target="_blank" rel="noopener">@{{ . }}</a></div>
+                </div>
+            {{ end }}
+            {{ with .youtube }}
+                <div class="author-item-infos">
+                    <div><i class="mdi mdi-youtube" aria-hidden="true"></i></div>
+                    <div><a href="https://youtube.com/@{{ . }}" target="_blank" rel="noopener">@{{ . }}</a></div>
+                </div>
+            {{ end }}
+            {{ with .github }}
+                <div class="author-item-infos">
+                    <div><i class="mdi mdi-github" aria-hidden="true"></i></div>
+                    <div><a href="https://github.com/{{ . }}" target="_blank" rel="noopener">@{{ . }}</a></div>
+                </div>
+            {{ end }}
+            {{ range .emails }}
+                <div class="author-item-infos">
+                    <div><i class="mdi mdi-email" aria-hidden="true"></i></div>
+                    <div><a href="mailto:{{ .address }}">{{ .address }}</a></div>
+                    {{ with .gpg }}
+                        <div><i class="mdi mdi-shield-key" aria-hidden="true"></i></div>
+                        <div><a href="{{ .link }}" target="_blank" rel="noopener">{{ .id }}</a></div>
+                    {{ end }}
+                </div>
+            {{ end }}
+        {{ end }}
+    </div>
+</div>

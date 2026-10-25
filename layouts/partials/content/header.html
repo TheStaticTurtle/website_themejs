@@ -1,0 +1,20 @@
+{{/* SiteHeader: logo + site name, then the outlined nav links, then a rule */}}
+<header id="section-header">
+    <div id="header-title" class="align-center">
+        <h1>
+            {{- with resources.Get "img/logo_white.jpg" }}
+            <img class="header-title-image" height="65" width="65" src="{{ (.Resize "130x jpg").RelPermalink }}" alt="Logo">
+            {{- end }}
+            <b>{{ site.Title }}</b>
+        </h1>
+    </div>
+    <div id="header-navigation" class="container align-center" style="display: flex">
+        <div class="row">
+            {{ range (index (site.Params.header | default dict) "links") }}
+                <a class="col header-link" href="{{ .url }}">{{ .name }}</a>
+            {{ end }}
+        </div>
+    </div>
+</header>
+
+<hr>

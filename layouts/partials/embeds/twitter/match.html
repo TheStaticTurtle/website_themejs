@@ -1,0 +1,10 @@
+{{- /* X / Twitter. Context: the URL. Returns (dict "url" <canonical tweet url>) for a link to a tweet
+       (twitter.com or x.com, /<user>/status/<id>), "" for any other URL. */ -}}
+{{- $parsed := urls.Parse . -}}
+{{- $out := "" -}}
+{{- if in (slice "twitter.com" "www.twitter.com" "mobile.twitter.com" "x.com" "www.x.com") $parsed.Host -}}
+    {{- with findRESubmatch `^/([A-Za-z0-9_]+)/status(?:es)?/([0-9]+)` $parsed.Path 1 -}}
+        {{- $out = dict "user" (index . 0 1) "id" (index . 0 2) "url" (printf "https://twitter.com/%s/status/%s" (index . 0 1) (index . 0 2)) -}}
+    {{- end -}}
+{{- end -}}
+{{- return $out -}}

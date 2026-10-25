@@ -1,0 +1,13 @@
+{{- /* {{< warn "Title" "One line of text" >}}details shown in a code well{{< /warn >}}
+       {{< warn "Title" >}}text{{< /warn >}}   {{< warn >}}text{{< /warn >}} */ -}}
+<blockquote class="warning">
+    {{ with .Get 0 }}
+        <h3 class="warning-title">{{ . }}</h3>
+    {{ end }}
+    {{ with .Get 1 }}
+        <p class="warning-text">{{ . }}</p>
+        <pre class="warning-content">{{ $.Inner }}</pre>
+    {{ else }}
+        <p class="warning-text">{{ .Inner }}</p>
+    {{ end }}
+</blockquote>

@@ -1,0 +1,39 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Logo and site name, then the outlined nav links, then a rule.
+header {
+  padding-top: $space-16;
+  padding-bottom: $space-20;
+
+  .header-link {
+    @include outline-button;
+
+    padding: $space-2 0;
+    margin: 0.25rem 1rem !important;
+  }
+}
+
+#header-title h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-16;
+  font-size: 3.6rem;
+
+  @include until($bp-header-compact) {
+    font-size: 330%;
+  }
+}
+
+.header-title-image {
+  display: inline-block;
+  flex: none;
+  height: 65px;
+  border-radius: $radius-full;
+  vertical-align: middle;
+
+  @include until($bp-header-compact) {
+    display: none;
+  }
+}

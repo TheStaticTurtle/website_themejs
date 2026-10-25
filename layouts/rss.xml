@@ -1,0 +1,75 @@
+{{- /* Full-content RSS feed of the posts: channel image, tags as categories, author, cover as media
+       thumbnail, and the whole article in content:encoded (links made absolute so readers can follow them). */ -}}
+{{- $posts := where site.RegularPages "Section" "posts" -}}
+{{- $rss := site.Params.rss | default dict -}}
+{{- $description := site.Params.description | default site.Title | strings.TrimSpace -}}
+{{- $base := site.BaseURL | strings.TrimSuffix "/" -}}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>{{ site.Title }}</title>
+    <description>{{ $description }}</description>
+    <link>{{ site.Home.Permalink }}</link>
+    {{- with resources.Get "img/logo_white.jpg" }}
+    {{- $logo := .Resize "512x jpg q100" }}
+    <image>
+      <url>{{ $logo.Permalink }}</url>
+      <title>{{ site.Title }}</title>
+      <link>{{ site.Home.Permalink }}</link>
+    </image>
+    {{- end }}
+    <generator>Hugo</generator>
+    {{- with $posts }}
+    <lastBuildDate>{{ (index . 0).Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</lastBuildDate>
+    {{- end }}
+    {{- with .OutputFormats.Get "rss" }}
+    <atom:link href="{{ .Permalink }}" rel="self" type="{{ .MediaType.Type }}"/>
+    {{- end }}
+    <ttl>{{ index $rss "ttl" | default 60 }}</ttl>
+    {{- with site.Language.Locale }}
+    <language>{{ . }}</language>
+    {{- end }}
+    {{- with site.Params.managingEditor }}
+    <managingEditor>{{ .email }}{{ with .name }} ({{ . }}){{ end }}</managingEditor>
+    {{- end }}
+    {{- with site.Params.webMaster }}
+    <webMaster>{{ .email }}{{ with .name }} ({{ . }}){{ end }}</webMaster>
+    {{- end }}
+    {{- with site.Copyright }}
+    <copyright>{{ . }}</copyright>
+    {{- end }}
+    {{- range $posts }}
+    {{- $post := . }}
+    <item>
+      <title>{{ .Title }}</title>
+      <description>{{ .Summary | plainify | strings.TrimSpace }}</description>
+      <link>{{ .Permalink }}</link>
+      <guid>{{ .Permalink }}</guid>
+      {{- range .Params.tags }}
+      {{- with site.GetPage (printf "/tags/%s" (. | urlize)) }}
+      <category>{{ .Title | humanize }}</category>
+      {{- end }}
+      {{- end }}
+      {{- with .Params.authors }}
+      {{- with site.GetPage (printf "/authors/%s" (index . 0)) }}
+      <dc:creator>{{ .Params.name }}</dc:creator>
+      {{- end }}
+      {{- end }}
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</pubDate>
+      {{- $cover := .Resources.GetMatch (.Params.image | default "-") }}
+      {{- with $cover }}
+      {{- $thumb := .Resize "1200x webp q90" }}
+      <media:thumbnail url="{{ $thumb.Permalink }}"/>
+      <media:content url="{{ $thumb.Permalink }}" medium="image"/>
+      {{- end }}
+      {{- /* the article, with root-relative links turned into absolute ones */}}
+      {{- $html := printf "<h1>%s</h1>\n<p>%s</p>\n" .Title (.Summary | plainify | strings.TrimSpace) }}
+      {{- with $cover }}{{ $html = printf "%s<img src=\"%s\" alt=\"%s\"/>\n<hr>\n" $html (.Resize "1200x webp q90").Permalink $post.Title }}{{ end }}
+      {{- $html = printf "%s%s" $html (substr .Content (len .Summary) | emojify) }}
+      {{- $html = replaceRE `((?:src|href)=["'])/([^/])` (printf "${1}%s/${2}" $base) $html }}
+      {{- $html = replace $html "]]>" "]]]]><![CDATA[>" }}
+      <content:encoded>{{ printf "<![CDATA[%s]]>" $html | safeHTML }}</content:encoded>
+    </item>
+    {{- end }}
+  </channel>
+</rss>

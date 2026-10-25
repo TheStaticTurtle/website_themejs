@@ -1,0 +1,9 @@
+{{- /* Tweet, with Twitter's own widget (https://developer.x.com/en/docs/x-for-websites/embedded-tweets).
+       Context: (dict "match" <result of match.html> "url" <url> "page" <page>).
+       The widget script is loaded once per page (partials/embeds/scripts.html) and replaces the <blockquote>.
+       Nothing is downloaded at build time. Until the script has run, or if it never does (no JavaScript, blocked,
+       deleted tweet), the reader sees the link card inside the blockquote. */ -}}
+{{- .page.Store.SetInMap "embedScripts" "twitter" true -}}
+<blockquote class="twitter-tweet" data-dnt="true" data-theme="light" data-conversation="none">
+    {{- partial "embeds/generic/render.html" (dict "url" .match.url "page" .page "tags" dict) -}}
+</blockquote>

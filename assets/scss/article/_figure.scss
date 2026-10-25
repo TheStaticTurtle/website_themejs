@@ -1,0 +1,180 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Figure: the image sits on a 1px accent rule; the caption is an ink tab below (or over)
+// it. A long caption is cut to one line with an ellipsis and grows on hover, focus or tap.
+//
+//   <figure class="below" tabindex="0">
+//     <div class="fig-im"><a><img></a></div>
+//     <figcaption><span class="txt">caption</span></figcaption>
+//   </figure>
+
+figure {
+  // A block as wide as its image (not display: table: tables size themselves before
+  // max-width applies, which let the caption spill over the text that follows).
+  display: flow-root; // also contains the caption's height, so nothing can overlap what follows
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto $space-16;
+  padding: 0;
+
+  &:focus-visible {
+    @include focus-ring(6px);
+  }
+
+  .fig-im {
+    position: relative;
+
+    // The accent rule sits between the image and its caption, so only a captioned figure has one
+    &:has(+ figcaption) {
+      border-bottom: 1px solid var(--main-accent-color);
+    }
+
+    a {
+      display: block;
+    }
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  figcaption {
+    @include display-label(14px, 0.06em);
+
+    display: grid;
+    grid-template-rows: minmax(1.2em, 0fr); // collapsed: one line
+    position: static;
+    max-width: 100%;
+    margin: 0;
+    padding: 3px $space-8;
+    background: var(--text-color-important);
+    color: var(--main-bg-color);
+    line-height: 1.2;
+    text-align: left;
+    transition: grid-template-rows 0.35s ease-in-out;
+
+    .txt {
+      display: block;
+      min-height: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: white-space 0s linear 0.3s allow-discrete;
+    }
+  }
+
+  // expanded: the whole caption
+  &:hover,
+  &:focus-within,
+  &.open {
+    figcaption {
+      grid-template-rows: minmax(1.2em, 1fr);
+
+      .txt {
+        white-space: normal;
+        transition-delay: 0s;
+      }
+    }
+  }
+
+  &.below figcaption {
+    // as wide as the image, never wider
+    box-sizing: border-box;
+    width: 0;
+    min-width: 100%;
+  }
+
+  &.over figcaption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+
+  @include reduced-motion {
+    figcaption,
+    figcaption .txt {
+      transition: none;
+    }
+  }
+}
+
+// {{< gallery >}}: rows of up to three figures
+$gallery-gap: $space-12;
+
+// --gallery-columns is set by the shortcode (only when given)
+.markdown .img-gallery-container {
+  margin-bottom: $space-16;
+}
+
+.markdown .img-gallery-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: $gallery-gap;
+
+  &:not(:first-of-type) {
+    margin-top: $gallery-gap;
+  }
+
+  @include until($bp-md - 1px) {
+    flex-direction: column;
+  }
+}
+
+// Explicit column count: every cell has the width of a full row's cell, so an incomplete
+// last row keeps the same size instead of stretching its images
+.markdown .img-gallery-container[style*="--gallery-columns"] .img-gallery-image {
+  flex: 0 0 calc((100% - (var(--gallery-columns) - 1) * #{$gallery-gap}) / var(--gallery-columns));
+
+  @include until($bp-md - 1px) {
+    flex: 1 1 auto;
+  }
+}
+
+.markdown .img-gallery-image {
+  display: flex;
+  min-width: 0;
+
+  // Auto (no column count given): the cells share the row, so an incomplete row stretches
+  flex: 1 1 0;
+
+  @include until($bp-md - 1px) {
+    flex: 1 1 auto;
+  }
+
+  // Images in a row are stretched to the tallest one and cropped (object-fit), so the
+  // captions line up. The figure is a two-row grid: the image takes what is left, the caption
+  // takes its own height. (Giving the image `height: 100%` without a fixed-height parent
+  // makes it as tall as the whole figure and pushes the caption out over the text below.)
+  figure {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
+    .fig-im {
+      min-height: 0;
+
+      a {
+        height: 100%;
+      }
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      margin: 0;
+      object-fit: cover;
+    }
+  }
+}
+
+// An image sharing its paragraph with text can't be a <figure> (invalid inside a <p>): it is a
+// plain centred picture, like the ones in the article, without caption or frame
+.markdown p img.inline-img {
+  margin: $space-8 auto;
+}

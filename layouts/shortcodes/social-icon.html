@@ -1,0 +1,4 @@
+{{- /* {{< social-icon link="https://..." icon="mdi-github" >}}optional label{{< /social-icon >}} */ -}}
+<a target="_blank" rel="noopener" class="social-icon" href="{{ .Get "link" }}">
+    <i class="mdi {{ .Get "icon" }}" aria-hidden="true"></i> {{ .Inner }}
+</a>

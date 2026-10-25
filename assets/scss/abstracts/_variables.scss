@@ -1,0 +1,59 @@
+// Values that are not colours. Colours live in base/_tokens.scss as CSS custom properties,
+// so they can switch between the light and dark palette at runtime.
+
+// ---- Breakpoints ------------------------------------------------------------
+$bp-header-compact: 500px; // header logo is hidden below this
+$bp-sm:             576px;
+$bp-md:             768px;
+$bp-lg:             992px;
+$bp-xl:             1200px;
+$bp-toc:            1730px; // the table of contents only shows above this
+
+// Container max-width from each breakpoint up
+$container-widths: (
+  $bp-sm: 540px,
+  $bp-md: 720px,
+  $bp-lg: 960px,
+  $bp-xl: 1140px,
+);
+$container-wide: 1150px;
+
+// ---- Spacing ----------------------------------------------------------------
+$space-2:  2px;
+$space-3:  3px;
+$space-4:  4px;
+$space-6:  6px;
+$space-8:  8px;
+$space-12: 12px;
+$space-16: 16px;
+$space-20: 20px;
+$space-24: 24px;
+$space-32: 32px;
+$space-52: 52px;
+
+// ---- Shape ------------------------------------------------------------------
+$radius-sm:   3px;
+$radius-md:   4px;
+$radius-full: 50%;
+
+// The 2.5px accent rule used under headers, tables, the footer and so on
+$accent-rule: 2.5px;
+
+// ---- Type -------------------------------------------------------------------
+$font-display: "Bebas Neue", cursive;
+$font-sans:    "Roboto", sans-serif;
+$font-mono:    monospace;
+
+// ---- Embed cards --------------------------------------------------------------
+// Sites whose card takes its brand colour from the matching --embed-<name>-color token
+$embed-brands: (youtube, github, reddit, stackoverflow, twitter, wikipedia, hackaday, diagram);
+
+// Other class names that should use a brand's colour (host-derived classes such as
+// "embed-stackexchange_com" would otherwise miss it)
+$embed-brand-aliases: (
+  stackexchange: stackoverflow,
+  gist: github,
+);
+
+// ---- Icons ------------------------------------------------------------------
+$icon-font: "Material Design Icons";

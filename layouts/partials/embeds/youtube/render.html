@@ -1,0 +1,6 @@
+{{- /* YouTube player (privacy-friendly youtube-nocookie.com domain, loaded lazily).
+       Context: (dict "match" <result of match.html> "url" <url> "page" <page>). Nothing is downloaded: the id comes from the link. */ -}}
+{{- $video := .match -}}
+<div class="video-embed">
+    <iframe src="https://www.youtube-nocookie.com/embed/{{ $video.id }}{{ with $video.start }}?start={{ . }}{{ end }}" width="720" height="406" title="YouTube video player" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>

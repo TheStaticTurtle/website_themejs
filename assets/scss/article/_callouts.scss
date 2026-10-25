@@ -1,0 +1,118 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Callouts use a "spine": no panel, a full-height coloured column carrying a glyph.
+//
+//   > quote                      accent spine, quotation mark
+//   {{< warn >}} / {{< todo >}}  orange spine, "!"
+//   term                         accent spine, "="
+//   : definition
+//
+// Targets Hugo's output: <blockquote><p>, <blockquote class="warning"> (h3.warning-title,
+// p.warning-text, pre.warning-content) and <dl><dt><dd>.
+
+.markdown {
+  blockquote,
+  dl {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; // a one-line quote is centred in the 44px minimum height
+    min-height: 44px;
+    margin: 0 0 $space-16;
+    padding: $space-8 $space-16 $space-8 52px;
+    border: 0;
+    background: var(--surface-color); // light panel behind the text, beside the spine
+    color: var(--text-color);
+  }
+
+  // ---- Quote --------------------------------------------------------------------------
+  blockquote {
+    @include spine(var(--post-content-blockquote-border-color), "\201C", 52px, 2px);
+
+    p {
+      margin: 0;
+      padding: 0;
+      color: var(--text-color);
+    }
+  }
+
+  // ---- Special thanks: a quote with a small heart in a pink spine ---------------------------------
+  blockquote.thanks {
+    @include spine(var(--embed-thanks-color), "\F02D1", 20px, 12px, $icon-font);
+  }
+
+  // ---- Definition list -----------------------------------------------------------------
+  dl {
+    @include spine(var(--post-content-dl-dt-color), "=", 30px, 8px);
+  }
+
+  dt {
+    @include display-label(18px);
+
+    margin: 0;
+    padding: 0;
+    color: var(--post-content-dl-dt-color);
+
+    // a second term in the same list
+    &:not(:first-child) {
+      margin-top: $space-8;
+    }
+  }
+
+  dd {
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+  }
+
+  // ---- Warning ({{< warn >}}, {{< todo >}}) ---------------------------------------------
+  blockquote.warning {
+    @include spine(var(--post-content-warning-border), "!", 30px, 6px);
+
+    .warning-title {
+      @include display-label(20px);
+
+      margin: 0;
+      color: var(--post-content-warning-border);
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .warning-text {
+      margin: 0;
+      color: var(--text-color);
+      font-family: $font-sans;
+      font-size: 0.925rem;
+    }
+
+    // Details shown in a code well
+    .warning-content {
+      margin: $space-8 0 0;
+      padding: $space-8 $space-12;
+      overflow-x: auto;
+      // a notch darker than the panel it sits on
+      background: color-mix(in srgb, var(--text-color-important) 8%, var(--surface-color)) !important;
+      color: var(--text-color) !important;
+      font-family: $font-mono;
+      font-size: 13.6px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+  }
+
+  // ---- To do ({{< todo >}}): a warning in red, on a light red panel -------------------------
+  blockquote.todo {
+    @include spine(var(--post-content-todo-border), "!", 30px, 6px);
+
+    background: color-mix(in srgb, var(--post-content-todo-border) 9%, var(--main-bg-color));
+
+    .warning-title {
+      color: var(--post-content-todo-border);
+    }
+
+    .warning-content {
+      background: color-mix(in srgb, var(--post-content-todo-border) 13%, var(--main-bg-color)) !important;
+    }
+  }
+}

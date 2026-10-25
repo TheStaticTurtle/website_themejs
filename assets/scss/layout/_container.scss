@@ -1,0 +1,43 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// One centred column. The max-width steps up with the viewport.
+.container {
+  width: 100%;
+  padding-left: $space-16;
+  padding-right: $space-16;
+  margin-left: auto;
+  margin-right: auto;
+
+  @each $breakpoint, $max-width in $container-widths {
+    @include from($breakpoint) {
+      max-width: $max-width;
+    }
+  }
+
+  @include from($bp-xl) {
+    width: $container-wide;
+  }
+}
+
+// A minimal flex grid, used for the header links and the newsletter-style forms
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+
+  * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+.col {
+  flex: 1 0 0;
+}

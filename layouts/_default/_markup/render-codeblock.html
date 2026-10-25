@@ -1,0 +1,5 @@
+{{- /* CodeBlock with the optional title="file.py" bar. transform.HighlightCodeBlock's .Inner has no wrapping
+       elements, so div/pre/code are rebuilt here, on one line (whitespace inside <pre> would show in the code).
+       Line numbers and hl_lines styling need markup.highlight.noClasses: false in the site config. */ -}}
+{{- $r := transform.HighlightCodeBlock . -}}
+<div class="highlight">{{ with .Attributes.title }}<span class="filename">{{ . }}</span>{{ end }}<pre tabindex="0" class="chroma"><code{{ with .Type }} class="language-{{ . }}" data-lang="{{ . }}"{{ end }}>{{ $r.Inner }}</code></pre></div>

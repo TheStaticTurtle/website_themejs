@@ -1,0 +1,6 @@
+{{- /* Third-party widget scripts for the embeds that were used in the page (see twitter/render.html).
+       Must come after the content in the page: the render partials set the flags while the article is rendered. */ -}}
+{{- $needed := .Store.Get "embedScripts" | default dict -}}
+{{- if index $needed "twitter" }}
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+{{- end }}

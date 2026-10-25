@@ -1,0 +1,105 @@
+@use "variables" as *;
+
+// ---- Media queries ------------------------------------------------------------
+@mixin from($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin until($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// ---- Typography ---------------------------------------------------------------
+
+// Small uppercase Bebas Neue text: footer name, table headers, embed domains, tags of the system
+@mixin display-label($size, $spacing: 0.08em) {
+  font-family: $font-display;
+  font-size: $size;
+  letter-spacing: $spacing;
+  text-transform: uppercase;
+}
+
+// ---- Interaction --------------------------------------------------------------
+@mixin focus-ring($offset: 2px) {
+  outline: 2px solid var(--text-color-important);
+  outline-offset: $offset;
+}
+
+// A square, 1px outlined button in the link colour that fills on hover
+@mixin outline-button {
+  border: 1px solid var(--link-color);
+  color: var(--link-color);
+  text-decoration: none;
+  min-width: 90px;
+
+  &:hover {
+    background: var(--link-color);
+    color: var(--on-accent-color);
+  }
+}
+
+// ---- Shapes -------------------------------------------------------------------
+
+// Solid ink bar with a thick accent rule underneath (table header, code filename, ...)
+@mixin ink-bar {
+  background: var(--text-color-important);
+  color: var(--main-bg-color);
+  border-bottom: $accent-rule solid var(--main-accent-color);
+}
+
+// A pseudo-element square marker: the table of contents and hovered table rows use it
+@mixin square-marker($size: 7px) {
+  content: "";
+  position: absolute;
+  width: $size;
+  height: $size;
+  background: var(--main-accent-color);
+}
+
+// A full-height coloured column on the left of an element, carrying a glyph.
+// Used by blockquotes, warnings and definition lists.
+@mixin spine($color, $glyph, $glyph-size: 30px, $glyph-top: 6px, $glyph-font: $font-display) {
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 36px;
+    background: $color;
+  }
+  
+  &::after {
+    content: $glyph;
+    position: absolute;
+    left: 0;
+    top: $glyph-top;
+    width: 36px;
+    text-align: center;
+    font: 400 #{$glyph-size}/1 $glyph-font;
+    color: var(--on-accent-color);
+  }
+}
+
+// Visually hidden but still read by screen readers
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

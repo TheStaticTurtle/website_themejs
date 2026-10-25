@@ -1,0 +1,17 @@
+{{ define "main" }}
+    <section id="section-posts" class="container">
+        <h2>All the posts</h2>
+
+        {{ $size := index (site.Params.pagination | default dict) "articleCount" | default 9 }}
+        {{ $paginator := .Paginate (where site.RegularPages "Section" "posts") $size }}
+
+        {{/* PostList: three columns, the newest post spans the first row on page 1 */}}
+        <div class="post-list">
+            {{ range $i, $p := $paginator.Pages }}
+                {{ partial "content/post-card.html" (dict "page" $p "big" (and (eq $i 0) (eq $paginator.PageNumber 1))) }}
+            {{ end }}
+        </div>
+
+        {{ partial "content/pagination.html" $paginator }}
+    </section>
+{{ end }}

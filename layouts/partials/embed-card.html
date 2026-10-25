@@ -1,0 +1,27 @@
+{{- /* Link preview for a URL ({{< og "https://..." >}}). Context: (dict "url" <url> "page" <page>).
+
+       Known sites have their own folder in partials/embeds/<site>/ with two partials:
+         match.html   given the URL, returns a dict describing it (e.g. the video id), or "" if it is not that site
+         render.html  given (dict "match" <that dict> "url" <url> "page" <page>), outputs the HTML
+       The first site in the list below that matches wins. Any other URL falls back to embeds/generic/, a card
+       built from the page's opengraph tags (fetched only when params.opengraph.enabled is true).
+
+       To support a new site: add embeds/<site>/match.html and render.html, then list the site here. */ -}}
+{{- $url := .url -}}
+{{- $page := .page -}}
+{{- $sites := slice "youtube" "twitter" -}}
+
+{{- $rendered := false -}}
+{{- range $sites -}}
+    {{- $site := . -}}
+    {{- if not $rendered -}}
+        {{- with partial (printf "embeds/%s/match.html" $site) $url -}}
+            {{- partial (printf "embeds/%s/render.html" $site) (dict "match" . "url" $url "page" $page) -}}
+            {{- $rendered = true -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if not $rendered -}}
+    {{- partial "embeds/generic/render.html" (dict "url" $url "page" $page "tags" (partial "embeds/generic/tags.html" (dict "url" $url "page" $page))) -}}
+{{- end -}}

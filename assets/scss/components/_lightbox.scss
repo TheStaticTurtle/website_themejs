@@ -1,0 +1,201 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Image modal, built by assets/js/lightbox.js (a native <dialog>).
+
+// Clickable article images
+.markdown .fig-im a {
+  cursor: zoom-in;
+}
+
+.lightbox {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  padding: $space-16;
+  border: 0;
+  background: transparent;
+  color: var(--main-bg-color);
+
+  &[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.88);
+  }
+}
+
+.lightbox-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+}
+
+.lightbox-image {
+  display: block;
+  max-width: 100%;
+  // leave room for the caption bar and the dialog padding
+  max-height: calc(100vh - 100px);
+  margin: 0 auto;
+  object-fit: contain;
+
+  // the accent rule only sits between the image and a caption
+  &:has(+ .lightbox-caption:not([hidden])) {
+    border-bottom: 1px solid var(--main-accent-color);
+  }
+}
+
+// Caption: the same ink tab the figures use
+.lightbox-caption {
+  @include display-label(16px, 0.06em);
+
+  // As wide as the image, never wider: its own width does not count towards the figure's,
+  // so a long caption wraps instead of stretching the box
+  box-sizing: border-box;
+  width: 0;
+  min-width: 100%;
+  padding: $space-4 $space-12;
+  background: var(--text-color-important);
+  color: var(--main-bg-color);
+  text-align: left;
+  overflow-wrap: anywhere;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// ---- Buttons ----------------------------------------------------------------------------
+.lightbox-button {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--main-bg-color);
+  background: var(--text-color-important);
+  color: var(--main-bg-color);
+  cursor: pointer;
+
+  &[hidden] {
+    display: none;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--main-accent-color);
+    color: var(--on-accent-color);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--main-accent-color);
+    outline-offset: 2px;
+  }
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  i {
+    margin: 0;
+    font-size: 28px;
+  }
+}
+
+.lightbox-close {
+  top: $space-16;
+  right: $space-16;
+}
+
+.lightbox-previous,
+.lightbox-next {
+  top: 50%;
+  margin-top: -22px;
+}
+
+.lightbox-previous {
+  left: $space-16;
+}
+
+.lightbox-next {
+  right: $space-16;
+}
+
+.lightbox-counter {
+  @include display-label(16px);
+
+  position: absolute;
+  top: $space-16;
+  left: $space-16;
+  color: var(--main-bg-color);
+}
+
+// ---- Narrow screens: the buttons leave the image -------------------------------------------
+// Overlaid buttons would cover the picture, so the viewer becomes a grid instead:
+//
+//   counter ........ close
+//   [        image        ]
+//   previous ....... next
+@include until($bp-md - 1px) {
+  .lightbox[open] {
+    display: grid;
+    grid-template:
+      "counter  close" auto
+      "figure   figure" 1fr
+      "previous next" auto
+      / minmax(0, 1fr) auto;
+    align-items: center;
+    gap: $space-12;
+    padding: $space-12;
+  }
+
+  .lightbox-button,
+  .lightbox-counter {
+    position: static;
+    margin: 0;
+  }
+
+  .lightbox-counter {
+    grid-area: counter;
+  }
+
+  .lightbox-close {
+    grid-area: close;
+  }
+
+  .lightbox-previous {
+    grid-area: previous;
+    justify-self: start;
+  }
+
+  .lightbox-next {
+    grid-area: next;
+    justify-self: end;
+  }
+
+  .lightbox-figure {
+    grid-area: figure;
+    justify-self: center;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .lightbox-image {
+    // room for the two button rows, the caption and the padding
+    max-height: calc(100dvh - 200px);
+  }
+}

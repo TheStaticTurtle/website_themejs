@@ -1,0 +1,23 @@
+{{- $c := site.Params.comments | default dict -}}
+{{- if and (index $c "enabled") (index $c "repo") }}
+<section id="section-comments" class="container markdown">
+    <h2 id="comments">Comments<a class="header-link" href="#comments"><i class="mdi mdi-link-variant" aria-hidden="true"></i><span class="sr-only">Shortcut to: Comments</span></a></h2>
+    <p>
+        Want to chat about this article? Just post a message down here. Chat is powered by giscus and all discussions can be found
+        here: <a href="https://github.com/{{ index $c "repo" }}/discussions">{{ index $c "repo" }}</a>
+    </p>
+    <script src="https://giscus.app/client.js"
+            data-repo="{{ index $c "repo" }}"
+            data-repo-id="{{ index $c "repoId" }}"
+            data-category="{{ index $c "category" | default "General" }}"
+            data-category-id="{{ index $c "categoryId" }}"
+            data-mapping="{{ index $c "mapping" | default "pathname" }}"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-theme="light"
+            data-lang="{{ index $c "lang" | default "en" }}"
+            crossorigin="anonymous"
+            async>
+    </script>
+</section>
+{{- end }}

@@ -1,0 +1,65 @@
+{{- /* Canonical link, language alternates, OpenGraph and Twitter card tags. Context: the page.
+       Image: see below.
+       Optional site param: fediverse: "@user@instance" (fediverse:creator, shows the author on Mastodon link previews). */ -}}
+{{- $isPost := and (eq .Section "posts") .IsPage -}}
+{{- $title := cond .IsHome site.Title (.Params.name | default .Title) -}}
+{{- $description := (or .Summary site.Params.description | default "") | plainify | truncate 200 -}}
+{{- /* Posts: their cover (default cover if none). Every other page (home, lists, tags...): the site logo */ -}}
+{{- $image := "" -}}
+{{- $imageW := 1200 -}}
+{{- $imageH := 630 -}}
+{{- if $isPost -}}
+    {{- with .Resources.GetMatch (.Params.image | default "-") -}}
+        {{- $image = (.Fill "1200x630 center jpg q90").Permalink -}}
+    {{- else -}}
+        {{- with resources.Get "img/default_post_cover.png" -}}
+            {{- $image = (.Fill "1200x630 center jpg q90").Permalink -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- with resources.Get "img/logo_white_rounded.png" -}}
+        {{- $image = (.Fill "400x400 center png").Permalink -}}
+        {{- $imageW = 400 -}}
+        {{- $imageH = 400 -}}
+    {{- end -}}
+{{- end -}}
+
+<link rel="canonical" href="{{ .Permalink }}">
+{{- range .Translations }}
+<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+{{- end }}
+
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:type" content="{{ cond $isPost "article" "website" }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="{{ replace (site.Language.Locale | default "en") "-" "_" }}">
+{{- if $description }}
+<meta property="og:description" content="{{ $description }}">
+{{- end }}
+{{- with $image }}
+<meta property="og:image" content="{{ . }}">
+<meta property="og:image:width" content="{{ $imageW }}">
+<meta property="og:image:height" content="{{ $imageH }}">
+{{- end }}
+{{- if $isPost }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- with .Lastmod }}
+<meta property="article:modified_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+{{- range .Params.tags }}
+<meta property="article:tag" content="{{ . }}">
+{{- end }}
+{{- end }}
+
+<meta name="twitter:card" content="{{ cond $isPost "summary_large_image" "summary" }}">
+<meta name="twitter:title" content="{{ $title }}">
+{{- if $description }}
+<meta name="twitter:description" content="{{ $description }}">
+{{- end }}
+{{- with $image }}
+<meta name="twitter:image" content="{{ . }}">
+{{- end }}
+{{- with site.Params.fediverse }}
+<meta name="fediverse:creator" content="{{ . }}">
+{{- end }}

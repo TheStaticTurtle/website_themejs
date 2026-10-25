@@ -1,0 +1,7 @@
+{{/* Sections: their posts, as a PostList */}}
+{{ define "main" }}
+    <section id="section-posts" class="container">
+        <h2>{{ .Title }}</h2>
+        {{ partial "content/post-list.html" . }}
+    </section>
+{{ end }}

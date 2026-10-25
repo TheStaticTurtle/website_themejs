@@ -1,0 +1,27 @@
+{{- /* Generic link card (the design system's EmbedCard): domain, title, description and an optional thumbnail.
+       Context: (dict "url" <url> "page" <page> "tags" <opengraph tags, see tags.html>). Without tags it is just the URL. */ -}}
+{{- $url := .url -}}
+{{- $tags := .tags -}}
+{{- $host := (urls.Parse $url).Host | strings.TrimPrefix "www." -}}
+{{- $site := index $tags "og:site_name" | default "" -}}
+{{- /* the brand class ("embed-github") tints the card, see article/_embed.scss */ -}}
+{{- $brand := cond (ne $site "") (urlize $site) (replaceRE `[^a-zA-Z0-9]` "_" $host) -}}
+{{- $title := index $tags "og:title" | default (index $tags "twitter:title") | default $url -}}
+{{- $description := index $tags "og:description" | default (index $tags "twitter:description") | default "" -}}
+{{- $image := "" -}}
+{{- with index $tags "og:image" -}}
+    {{- $image = partial "image.html" (dict "page" $.page "src" .) -}}
+{{- end -}}
+<a target="_blank" rel="noopener" class="embed embed-{{ $brand }}" href="{{ $url }}">
+    {{ partial "embeds/arrow.html" }}
+    <span class="embed-content">
+        <span class="embed-domain">{{ $host }}</span>
+        <span class="embed-title">{{ $title | htmlUnescape }}</span>
+        {{- with $description }}
+        <span class="embed-desc">{{ . | htmlUnescape | replaceRE `\s*\n\s*` " " | truncate 280 }}</span>
+        {{- end }}
+    </span>
+    {{- if $image }}
+    <span class="embed-image" style="background-image: url('{{ $image }}')"></span>
+    {{- end }}
+</a>

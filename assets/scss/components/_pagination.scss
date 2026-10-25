@@ -1,0 +1,54 @@
+@use "../abstracts/variables" as *;
+
+.page-selector {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: $space-24 0;
+  text-align: center;
+
+  a,
+  span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 28px;
+    height: 28px;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  // Hovering a page number or an enabled arrow
+  a:hover,
+  .page-selector-control:not(.page-selector-disabled):hover {
+    background: var(--surface-color);
+    color: var(--text-color-important);
+  }
+
+  i {
+    display: inline-flex;
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .page-selector-controls {
+    display: inline-flex;
+    margin: 0 $space-8;
+  }
+
+  // These must be nested under .page-selector: its `a, span` rule above would otherwise
+  // win and give the current page dark text on a dark fill.
+  .page-selector-current {
+    background: var(--text-color-important);
+    color: var(--main-bg-color);
+    box-shadow: inset 0 (-$accent-rule) 0 var(--main-accent-color);
+  }
+
+  .page-selector-disabled {
+    color: var(--text-color-muted);
+  }
+}

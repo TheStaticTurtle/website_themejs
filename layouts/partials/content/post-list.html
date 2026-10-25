@@ -1,0 +1,11 @@
+{{/* PostList + PageSelector for a list of pages. Context: a page whose .Pages are the posts. */}}
+{{ $size := index (site.Params.pagination | default dict) "articleCount" | default 9 }}
+{{ $paginator := .Paginate .Pages $size }}
+
+<div class="post-list">
+    {{ range $paginator.Pages }}
+        {{ partial "content/post-card.html" (dict "page" .) }}
+    {{ end }}
+</div>
+
+{{ partial "content/pagination.html" $paginator }}

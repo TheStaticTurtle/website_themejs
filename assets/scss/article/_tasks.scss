@@ -1,0 +1,86 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+// Task lists: diamonds instead of checkboxes, and an "x / y done" counter under the list.
+// Targets Hugo's bare output: <li><input type="checkbox" disabled> text</li>
+
+$task-list: 'ul:has(> li > input[type="checkbox"])';
+
+.markdown {
+  #{$task-list} {
+    margin: 0 0 $space-16;
+    padding: 0;
+    list-style: none;
+
+    // nested lists
+    ul {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    // only the outermost list counts and shows the total
+    &:not(li ul) {
+      counter-reset: tasks-all tasks-done;
+
+      &::after {
+        @include display-label(18px);
+
+        content: counter(tasks-done) " / " counter(tasks-all) " done";
+        display: block;
+        margin-top: $space-8;
+        padding-top: $space-4;
+        border-top: $accent-rule solid var(--main-accent-color);
+        color: var(--main-accent-color);
+      }
+    }
+  }
+
+  li:has(> input[type="checkbox"]) {
+    position: relative;
+    padding: $space-3 0 $space-3 $space-24;
+    list-style: none;
+    text-align: left;
+    counter-increment: tasks-all;
+
+    > ul {
+      display: inline-block;
+      width: 100%;
+      vertical-align: top;
+    }
+
+    &:has(> input[type="checkbox"]:checked) {
+      color: var(--text-color-muted);
+      counter-increment: tasks-all tasks-done;
+    }
+  }
+
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    left: $space-2;
+    top: 7px;
+    width: 11px;
+    height: 11px;
+    margin: 0;
+    border: 1.5px solid var(--text-color-muted);
+    background: none;
+    font: inherit;
+    transform: rotate(45deg); // a square turned into a diamond
+    transition: background-color 0.15s, border-color 0.15s;
+
+    &:checked {
+      border-color: var(--main-accent-color);
+      background-color: var(--main-accent-color);
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+}

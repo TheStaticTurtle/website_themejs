@@ -1,0 +1,3 @@
+{{- /* {{< age >}}: whole years since the author's birthday (params.birthdate, default 2001-12-17) */ -}}
+{{- $birth := site.Params.birthdate | default "2001-12-17" -}}
+{{- div (sub now.Unix (time $birth).Unix) 31536000 -}}
