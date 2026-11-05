@@ -55,7 +55,7 @@ p {
   overflow-wrap: break-word;
 }
 
-ul {
+ul, ol {
   color: var(--text-color);
 }
 
@@ -65,6 +65,10 @@ li {
   font-size: 1.05rem;
   list-style-type: square;
   list-style-position: outside;
+}
+
+ol > li {
+  list-style-type: decimal;
 }
 
 a {
