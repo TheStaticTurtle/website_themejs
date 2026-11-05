@@ -2,6 +2,7 @@
        {{< gallery columns=2 >}}        or {{< gallery 2 >}}: that many images per row, an incomplete row keeps the cell size
        One image per line: a URL or images/xxx.jpg, optionally followed by "a caption". Close with {{< /gallery >}}
        .mp4 and .webm entries are shown as videos (with controls) instead of images.
+       A local xxx.webm with an xxx.mp4 next to it (HEVC, tagged hvc1) is served with both, for Safari.
        {{< gallery autoplay=true >}}    videos start playing on their own (muted, looping); combine with columns=2 */ -}}
 {{ $columns := 3 }}
 {{ $fixed := false }}
@@ -48,17 +49,26 @@
             {{ $isVideo := in (slice ".mp4" ".webm") $ext }}
             {{ $url := $src }}
             {{ $full := $src }}
+            {{ $sources := slice }}
             {{ if $isVideo }}
                 {{- /* Remote videos are streamed from their URL, not downloaded at build time */ -}}
                 {{ if not (hasPrefix $src "http") }}
                     {{ $url = partial "image.html" (dict "page" $.Page "src" $src) }}
+                    {{- /* A .webm with an .mp4 of the same name next to it (HEVC, tagged hvc1) gets both as <source>s:
+                           Safari picks the HEVC mp4, browsers that can't decode HEVC fall back to the webm */ -}}
+                    {{ if eq $ext ".webm" }}
+                        {{ $mp4 := printf "%s.mp4" (strings.TrimSuffix ".webm" $src) }}
+                        {{ with $.Page.Resources.GetMatch $mp4 }}
+                            {{ $sources = slice (dict "src" .RelPermalink "type" "video/mp4; codecs=\"hvc1.1.6.L123.B0\"") (dict "src" $url "type" "video/webm") }}
+                        {{ end }}
+                    {{ end }}
                 {{ end }}
             {{ else }}
                 {{ $url = partial "image.html" (dict "page" $.Page "src" $src) }}
                 {{ $full = partial "image.html" (dict "page" $.Page "src" $src "full" true) }}
             {{ end }}
             <div class="img-gallery-image">
-                {{ partial "figure.html" (dict "src" $url "href" $full "alt" $caption "caption" $caption "video" $isVideo "autoplay" $autoplay) }}
+                {{ partial "figure.html" (dict "src" $url "sources" $sources "href" $full "alt" $caption "caption" $caption "video" $isVideo "autoplay" $autoplay) }}
             </div>
 
         {{ if $endRow }}</div>{{ end }}

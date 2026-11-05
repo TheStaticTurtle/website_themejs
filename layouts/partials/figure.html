@@ -1,8 +1,19 @@
-{{- /* Figure: image (or video) on a hairline accent rule, optional caption tab. Context: (dict "src" url "href" url "alt" text "caption" text "video" bool "autoplay" bool) */ -}}
+{{- /* Figure: image (or video) on a hairline accent rule, optional caption tab.
+       Context: (dict "src" url "href" url "alt" text "caption" text "video" bool "autoplay" bool "sources" slice)
+       "sources": optional, for videos: (dict "src" url "type" mime) in order of preference; replaces "src" */ -}}
 <figure class="below"{{ if .caption }} tabindex="0"{{ end }}>
     <div class="fig-im">
         {{- if .video }}
-        <video src="{{ .src }}" controls muted loop playsinline{{ if .autoplay }} autoplay{{ else }} preload="metadata"{{ end }} aria-label="{{ .alt }}"></video>
+        {{- $attrs := printf "controls muted loop playsinline%s" (cond (.autoplay | default false) " autoplay" " preload=\"metadata\"") }}
+        {{- with .sources }}
+        <video {{ $attrs | safeHTMLAttr }} aria-label="{{ $.alt }}">
+            {{- range . }}
+            <source src="{{ .src }}" type="{{ .type }}">
+            {{- end }}
+        </video>
+        {{- else }}
+        <video src="{{ .src }}" {{ $attrs | safeHTMLAttr }} aria-label="{{ .alt }}"></video>
+        {{- end }}
         {{- else }}
         <a target="_blank" rel="noopener" href="{{ .href }}"><img src="{{ .src }}" alt="{{ .alt }}" loading="lazy"></a>
         {{- end }}
