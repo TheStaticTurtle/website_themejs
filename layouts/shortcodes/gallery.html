@@ -1,10 +1,14 @@
 {{- /* {{< gallery >}}                  rows of up to three images, an incomplete row stretches to fill the width
        {{< gallery columns=2 >}}        or {{< gallery 2 >}}: that many images per row, an incomplete row keeps the cell size
-       One image per line: a URL or images/xxx.jpg, optionally followed by "a caption". Close with {{< /gallery >}} */ -}}
+       One image per line: a URL or images/xxx.jpg, optionally followed by "a caption". Close with {{< /gallery >}}
+       .mp4 and .webm entries are shown as videos (with controls) instead of images.
+       {{< gallery autoplay=true >}}    videos start playing on their own (muted, looping); combine with columns=2 */ -}}
 {{ $columns := 3 }}
 {{ $fixed := false }}
+{{ $autoplay := false }}
 {{ if .IsNamedParams }}
     {{ with .Get "columns" }}{{ $columns = int . }}{{ $fixed = true }}{{ end }}
+    {{ with .Get "autoplay" }}{{ $autoplay = eq (lower (string .)) "true" }}{{ end }}
 {{ else }}
     {{ with .Get 0 }}{{ $columns = int . }}{{ $fixed = true }}{{ end }}
 {{ end }}
@@ -40,10 +44,21 @@
                 {{ end }}
             {{ end }}
 
-            {{ $url := partial "image.html" (dict "page" $.Page "src" $src) }}
-            {{ $full := partial "image.html" (dict "page" $.Page "src" $src "full" true) }}
+            {{ $ext := lower (path.Ext (index (split $src "?") 0)) }}
+            {{ $isVideo := in (slice ".mp4" ".webm") $ext }}
+            {{ $url := $src }}
+            {{ $full := $src }}
+            {{ if $isVideo }}
+                {{- /* Remote videos are streamed from their URL, not downloaded at build time */ -}}
+                {{ if not (hasPrefix $src "http") }}
+                    {{ $url = partial "image.html" (dict "page" $.Page "src" $src) }}
+                {{ end }}
+            {{ else }}
+                {{ $url = partial "image.html" (dict "page" $.Page "src" $src) }}
+                {{ $full = partial "image.html" (dict "page" $.Page "src" $src "full" true) }}
+            {{ end }}
             <div class="img-gallery-image">
-                {{ partial "figure.html" (dict "src" $url "href" $full "alt" $caption "caption" $caption) }}
+                {{ partial "figure.html" (dict "src" $url "href" $full "alt" $caption "caption" $caption "video" $isVideo "autoplay" $autoplay) }}
             </div>
 
         {{ if $endRow }}</div>{{ end }}

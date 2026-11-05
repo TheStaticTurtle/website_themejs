@@ -64,7 +64,7 @@ Links to other sites open in a new tab (`render-link`). An image in the middle o
 | Shortcode | Use |
 | --- | --- |
 | `{{< og "https://..." >}}` | Link-preview card. YouTube becomes a player, tweets use the official widget (with a card as fallback), anything else is a card built from the page's OpenGraph tags. A page that fails to load only affects its own card, which falls back to the plain URL. |
-| `{{< gallery columns=2 >}}` (or `{{< gallery 2 >}}`) | One image per line, optional `"caption"`; `columns` is the number of images per row. Without it, rows hold up to 3 images and an incomplete row stretches to fill the width. |
+| `{{< gallery columns=2 >}}` (or `{{< gallery 2 >}}`) | One image per line, optional `"caption"` (`.mp4` and `.webm` entries are shown as videos with controls, remote ones are streamed, not downloaded; add `autoplay=true` to have them start on their own, muted and looping); `columns` is the number of images per row. Without it, rows hold up to 3 images and an incomplete row stretches to fill the width. |
 | `{{< warn "Title" "Text" >}}details{{< /warn >}}` | Orange callout. |
 | `{{< todo >}}notes{{< /todo >}}` | "Missing content" callout. |
 | `{{< biglink "url" "Label" >}}` | Outlined button. |

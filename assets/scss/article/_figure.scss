@@ -35,7 +35,8 @@ figure {
     }
   }
 
-  img {
+  img,
+  video {
     display: block;
     max-width: 100%;
     margin: 0 auto;
@@ -163,7 +164,13 @@ $gallery-gap: $space-12;
       }
     }
 
-    img {
+    // a video has no link wrapper, so it fills .fig-im itself
+    .fig-im > video {
+      height: 100%;
+    }
+
+    img,
+    video {
       width: 100%;
       height: 100%;
       max-height: none;
